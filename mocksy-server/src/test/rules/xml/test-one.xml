@@ -1,0 +1,4 @@
+<parent>
+	<child>one</child>
+	<child>${name}</child>
+</parent>

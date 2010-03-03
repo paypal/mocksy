@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+	<default-response file="error.nvp"/>
+	
+	<rule id="success" file="success.nvp">
+		<match param="message">success</match>
+	</rule>
+</rules>

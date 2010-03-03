@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+	<rule file="test-one.xml">
+		<match>.*/test-one\.xml</match>
+		<filter class="org.mocksy.filter.XslFilter">
+			<stylesheet>html.xslt</stylesheet>
+		</filter>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<name>Mocksy</name>
+		</filter>
+	</rule>
+
+	<default-response file="default.xml"/>
+
+<!-- <rule file="response_3rd_masspay.xml">
+		<match xpath="//auth_actor/username" pattern="svulpius-biz2_api1.paypal.com" />
+		<match xpath="//auth_actor/password" pattern="P8HMYWSTRSVSNDCS" />
+		<match xpath="//auth_actor/signature" pattern="AkJMEJpUAcpuFwS30UMq.KKC3ISXASaAcap18Ts2MlnrVqEuts0BNVqm" />
+		<match xpath="//subject_alias" pattern="mclay-dev-sig@paypal.com" />
+		<match xpath="//action" pattern="MassPay" />
+	</rule> -->
+</rules>

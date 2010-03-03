@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+	<default-response file="default.txt" />
+
+	<rule id="xml" ruleset="xml/rules.xml">
+		<match>/xml/.*</match>
+	</rule>
+
+    <rule id="nvp" ruleset="nvp/rules.xml">
+    	<match>/nvp/.*</match>
+    </rule>
+    
+<!-- <rule id="json" ruleset="json/rules.xml">
+		<match pattern="/json/.*" />
+	</rule>
+	
+	<rule id="soap" ruleset="soap">
+		<match xpath="//soap:envelope" pattern=".*" />
+	</rule> -->
+</rules>
