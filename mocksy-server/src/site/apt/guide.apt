@@ -1,0 +1,117 @@
+Mocksy User Guide
+
+* Overview
+
+  The primary abstractions in Mocksy are a request and response.  A request is
+received and it is mapped to a response that is returned back to the client.
+In this way, it acts exactly like a normal service would, except without all
+the pesky business logic, data access, etc.
+
+  This mapping is accomplished with a set of rules, which can be grouped into
+rulesets.  Only one rule is triggered for each request, and the corresponding
+response is returned to the client. The rule is triggered by being the first
+one in the list with a "matcher" that matches the request.
+
+  A matcher could match a request either by the URI, query parameters, or with
+a match on the body, either with a regular expression or XPath, if the data
+happens to be in XML.
+
+* Configuration
+
+** Code vs. XML
+
+  Mocksy was built with the principles of Inversion of Control in mind, so you can configure
+rules, etc. in code by wiring the objects together yourself.  While this can be useful, it
+is often more convenient to configure things with XML files, so there's a built-in facility
+for that, as well.
+    
+** File vs. URL
+
+  When you use the XML configuration option, you can reference files on your local filesystem,
+or remote files via a URL.  With the URL option, you can manage a set of rules that
+represent a service and share them others.  This keeps your clients from having to know too
+much about your service or about Mocksy.
+    
+* Supported Matchers
+
+** Matching HTTP
+
+  For standard HTTP requests, you can match against header values, POST
+parameters or the full URL string, itself.  Here's an example of each
+using XML configuration:
+
+       * Headers
+
++--------------------------------------------------
+         <rule id="header_match" file="...">
+            <match header="Referer">http://www.mocksy.org/</match>
+         </rule>  
++--------------------------------------------------
+
+       * POST Parameters
+
++--------------------------------------------------
+         <rule id="param_match" file="...">
+            <match param="username">testuser</match>
+         </rule>  
++--------------------------------------------------
+
+       * Full URL
+
++--------------------------------------------------
+         <rule id="url_match" file="...">
+            <match>/test/.*</match>
+         </rule>  
++--------------------------------------------------
+
+** Matching XML
+
+  If the body of your request is XML, e.g. SOAP, you can also match the body using an XPath
+query, e.g.:
+
++--------------------------------------------------
+         <rule id="xml_match" file="...">
+            <match xpath="//envelope/body/query">mock server</match>
+         </rule>
++--------------------------------------------------
+           
+* Filters
+
+  In addition to specifying the file containing the contents of the response, each rule can
+also define one or more filters that augment the response.  For example, there's an 
+XmlResponseFilter that allows you to specify a stylesheet to apply to the XML response.
+There's also a PropertyFilter that interpolates Ant-style property tags.
+ 
+  You can define filters as part of your rules, e.g.:
+
++--------------------------------------------------
+	<rule id="html_response" file="data.xml">
+		<filter class="org.mocksy.filter.XslFilter>
+			<stylesheet>html.xslt</stylesheet>
+		</filter>
+	</rule>
++--------------------------------------------------
+
+  You can also create your own custom filters, as long as they implement the
+org.mocksy.filter.ResponseFilter interface.
+
+* Admin
+
+  If you start the admin port (using the -a switch when running the server), you will get
+access to two important pieces of information remotely: a description of the rules, and
+a copy of the server logs.
+
+** Rules page
+
+  By requesting the /rules URI on the Mocksy server, e.g. http://localhost:8081/rules,
+you'll get an XML representation of all of the rules that are processing requests on
+the main port.  This is very useful for debugging, as well as for communicating with
+remote teams what options they have in their testing.
+ 
+** Logging page
+
+  The /logs URI, e.g. http://localhost:8081/logs, should provide access to the logs
+directory that holds all of the server log files.  This is very helpful for debugging, 
+especially when you're trying to figure out why you're not getting the response you 
+thought you should get for the request you're making.  The logs should show you exactly
+which rule is being triggered and which of the matchers on previous rules failed.

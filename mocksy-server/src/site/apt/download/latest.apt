@@ -1,0 +1,19 @@
+Download the latest version
+
+  The current stable version of Mocksy is 0.8.
+  
+  You can download the artifacts here:
+
+    * Executable Jar: {{http://www.mocksy.org/repo/org/mocksy/mocksy-server/0.8/mocksy-server-0.8.jar}}
+
+    * Sources: {{http://www.mocksy.org/repo/org/mocksy/mocksy-server/0.8/mocksy-server-0.8-sources.jar}}
+    
+  Or, if you've using Maven, simply set a dependency as:
+
+------------------------------------------------------------
+	<dependency>
+		<groupId>org.mocksy</groupId>
+		<artifactId>mocksy-server</artifactId>
+		<version>0.8</version>
+	</dependency>
+------------------------------------------------------------

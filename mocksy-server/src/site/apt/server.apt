@@ -1,0 +1,24 @@
+Running the server
+ 
+  Mocksy comes with an embedded Jetty server to accept HTTP request
+and respond based on your Mocksy rulesets.  Simply run the executable
+jar, mocksy-server, like so:
+
++--------------------------------------------------
+	java -jar mocksy-server.jar --help
++--------------------------------------------------
+    
+  and the following usage information will be displayed:
+
++--------------------------------------------------
+	usage: java -jar mocksy-server.jar [-a] [-h] [-k <arg>] [-p <arg>] [-r <arg>]
+	 -a,--admin            open admin port (one higher than request port)
+	 -h,--help             show this message
+	 -k,--keystore <arg>   location of the keystore, if running in SSL (default: ./keystore.jks)
+	 -p,--port <arg>       port that server will listen on (default: 8080)
+	 -r,--ruleset <arg>    root configuration directory (default: working directory)
++--------------------------------------------------
+
+  All of the options are optional, and the defaults are mentioned in the
+usage output.
+

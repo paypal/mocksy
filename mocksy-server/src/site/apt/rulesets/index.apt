@@ -1,0 +1,17 @@
+Mocksy Rulesets
+
+  Mocksy is only useful with a full compliment of rulesets that represent
+servers or web services that you want to integrate with.  Below are a 
+bunch of rulesets for popular APIs.
+
+*-------------------------+-------------------------------------------------------+
+| PayPal ExpressCheckout  | {{http://www.mocksy.org/rulesets/paypal-ec.zip}}      |
+*-------------------------+-------------------------------------------------------+
+| PayPal AdaptivePayments | {{http://www.mocksy.org/rulesets/paypal-ap.zip}}      |
+*-------------------------+-------------------------------------------------------+
+| Google AdWords API      | {{http://www.mocksy.org/rulesets/google-adwords.zip}} |
+*-------------------------+-------------------------------------------------------+
+| Yahoo Contacts API      | {{http://www.mocksy.org/rulesets/yahoo-contacts.zip}} |
+*-------------------------+-------------------------------------------------------+
+| Facebook Photo API      | {{http://www.mocksy.org/rulesets/facebook-photo.zip}} |
+*-------------------------+-------------------------------------------------------+
