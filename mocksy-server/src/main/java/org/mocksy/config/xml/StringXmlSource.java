@@ -56,9 +56,9 @@ public class StringXmlSource extends XmlSource {
 	}
 
 	@Override
-	public Element getRootElement() throws Exception {
+	public Element getRulesetElement() throws Exception {
 		if ( this.root == null ) {
-			this.root = getRootElement( new ByteArrayInputStream( this.xml
+			this.root = getRulesetElement( new ByteArrayInputStream( this.xml
 			        .getBytes() ) );
 		}
 		return this.root;

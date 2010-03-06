@@ -37,25 +37,25 @@ abstract public class XmlSource implements Source {
 	// TODO: clean up the throws clauses
 
 	/**
-	 * Returns the root XML element from the Source.
+	 * Returns the ruleset element from the XML source.
 	 * 
-	 * @return root XML element
-	 * @throws Exception if there's a problem retrieving the root element
+	 * @return ruleset XML element
+	 * @throws Exception if there's a problem retrieving the ruleset element
 	 */
-	abstract public Element getRootElement() throws Exception;
+	abstract public Element getRulesetElement() throws Exception;
 
 	/**
-	 * Returns the root XML element from an InputStream.  This helper
+	 * Returns the ruleset element from an XML InputStream.  This helper
 	 * method abstracts the actual XML processing from subtypes of XmlSource.
 	 * 
 	 * @param input InputStream containing the XML document
-	 * @return the root XML element from the document
+	 * @return the ruleset XML element from the document
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	protected static Element getRootElement(InputStream input)
+	protected static Element getRulesetElement(InputStream input)
 	        throws ParserConfigurationException, SAXException, IOException
 	{
 		if ( input == null ) {

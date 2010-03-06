@@ -59,8 +59,8 @@ public class UrlXmlSource extends XmlSource {
 	}
 
 	@Override
-	public Element getRootElement() throws Exception {
-		return getRootElement( this.url.openStream() );
+	public Element getRulesetElement() throws Exception {
+		return getRulesetElement( this.url.openStream() );
 	}
 
 	/**

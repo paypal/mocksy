@@ -120,9 +120,15 @@ public class XmlRulesetConfig implements Configurator {
 	protected void updateData() throws Exception {
 		// Clear the ruleset
 		this.ruleset.clear();
-		Element root = this.source.getRootElement();
+		Element ruleset = this.source.getRulesetElement();
+		String version = ruleset.getAttribute( "version" );
+		if (version == null) {
+			// this is for later, when we might have to change the 
+			// structure of the ruleset XML
+			version = "1.0";
+		}
 		// Get this list of Rules
-		NodeList nodeList = root.getElementsByTagName( RULE_TAG );
+		NodeList nodeList = ruleset.getElementsByTagName( RULE_TAG );
 		for ( int i = 0; i < nodeList.getLength(); i++ ) {
 			Element ruleNode = (Element) nodeList.item( i );
 			Rule rule = null;
@@ -144,7 +150,7 @@ public class XmlRulesetConfig implements Configurator {
 			this.ruleset.addRule( rule );
 		}
 		// Setup the default response
-		nodeList = root.getElementsByTagName( DEFAULT_RESPONSE_TAG );
+		nodeList = ruleset.getElementsByTagName( DEFAULT_RESPONSE_TAG );
 		if ( nodeList.getLength() > 0 ) {
 			// there should only be one
 			Element ruleNode = (Element) nodeList.item( 0 );

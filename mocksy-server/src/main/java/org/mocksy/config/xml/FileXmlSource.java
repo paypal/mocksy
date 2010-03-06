@@ -74,8 +74,8 @@ public class FileXmlSource extends XmlSource {
 	}
 
 	@Override
-	public Element getRootElement() throws Exception {
-		return getRootElement( this.xmlFile.toURI().toURL().openStream() );
+	public Element getRulesetElement() throws Exception {
+		return getRulesetElement( this.xmlFile.toURI().toURL().openStream() );
 	}
 
 }
