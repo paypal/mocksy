@@ -36,12 +36,13 @@ public class MatcherTest {
 		// nested ruleset
 		this.nestedRuleset = new Ruleset();
 		// nested default rule
-		this.nestedRuleset.setDefaultResponse( new Response( "nested-default",
-		        "This is a nested default response.", "text/plain" ) );
+		this.nestedRuleset.setDefaultRule( new ResponseRule( new Response(
+		        "nested-default", "This is a nested default response." ) ) );
 
-		ResponseRule responseRule = new ResponseRule( new Response(
-		        "xml-response-one", "<doc type=\"xml\">response</doc>",
-		        "text/xml" ) );
+		Response xmlResponse = new Response( "xml-response-one",
+		        "<doc type=\"xml\">response</doc>" );
+		xmlResponse.setContentType( "text/xml" );
+		ResponseRule responseRule = new ResponseRule( xmlResponse );
 		XmlMatcher xmlMatcher = new XmlMatcher( "/envelope" );
 		responseRule.addMatcher( xmlMatcher );
 		xmlMatcher.setPattern( Pattern.compile( "empty" ) );
@@ -56,14 +57,14 @@ public class MatcherTest {
 		this.ruleset.addRule( nestedRule );
 
 		responseRule = new ResponseRule( new Response( "response-one",
-		        "This is the first response", "text/plain" ) );
+		        "This is the first response" ) );
 		HttpMatcher matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
 		matcher.setPattern( Pattern.compile( ".*/resp-one/.*" ) );
 		this.ruleset.addRule( responseRule );
 
 		responseRule = new ResponseRule( new Response( "response-two",
-		        "This is the second response", "text/plain" ) );
+		        "This is the second response" ) );
 		matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
 		matcher.setHeader( "testHeader" );
@@ -71,7 +72,7 @@ public class MatcherTest {
 		this.ruleset.addRule( responseRule );
 
 		responseRule = new ResponseRule( new Response( "response-three",
-		        "This is the third response", "text/plain" ) );
+		        "This is the third response" ) );
 		matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
 		matcher.setParam( "testParam" );

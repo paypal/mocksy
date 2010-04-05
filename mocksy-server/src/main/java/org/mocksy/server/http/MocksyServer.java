@@ -43,6 +43,7 @@ import org.mortbay.resource.FileResource;
  */
 public class MocksyServer {
 	private Ruleset ruleset;
+	private Server server;
 	private boolean admin;
 	private String keystore;
 	private String storepass;
@@ -85,56 +86,65 @@ public class MocksyServer {
 	 * 
 	 * @throws Exception
 	 */
-	void start() throws Exception {
-		Server server = new Server();
-		ContextHandlerCollection contexts = new ContextHandlerCollection();
-		server.setHandler( contexts );
+	public synchronized void start() throws Exception {
+		if ( this.server == null ) {
+			this.server = new Server();
+			ContextHandlerCollection contexts = new ContextHandlerCollection();
+			this.server.setHandler( contexts );
 
-		if ( this.admin ) {
-			// open up the admin connector
-			Connector adminConnector = setupAdminConnector();
-			server.addConnector( adminConnector );
+			if ( this.admin ) {
+				// open up the admin connector
+				Connector adminConnector = setupAdminConnector();
+				this.server.addConnector( adminConnector );
 
-			WebAppContext adminContext = new WebAppContext();
-			adminContext.setContextPath( "/" );
-			// display Ruleset in XML
-			ServletHolder rulesServlet = new ServletHolder( new RulesServlet(
-			        this.ruleset ) );
-			adminContext.addServlet( rulesServlet, "/rules" );
+				WebAppContext adminContext = new WebAppContext();
+				adminContext.setContextPath( "/" );
+				// display Ruleset in XML
+				ServletHolder rulesServlet = new ServletHolder(
+				        new RulesServlet( this.ruleset ) );
+				adminContext.addServlet( rulesServlet, "/rules" );
 
-			// show log files
-			adminContext.setBaseResource( new FileResource( new File( "." )
+				// show log files
+				adminContext.setBaseResource( new FileResource( new File( "." )
+				        .toURI().toURL() ) );
+				adminContext.setConnectorNames( new String[] { adminConnector
+				        .getName() } );
+				contexts.addHandler( adminContext );
+				WebAppContext logsContext = new WebAppContext();
+				logsContext.setContextPath( "/logs" );
+				logsContext.setBaseResource( new FileResource(
+				        new File( "logs" ).toURI().toURL() ) );
+				logsContext.setConnectorNames( new String[] { adminConnector
+				        .getName() } );
+				contexts.addHandler( logsContext );
+
+			}
+
+			// setup main connector
+			Connector requestConnector = this.setupRequestConnector();
+			this.server.addConnector( requestConnector );
+			WebAppContext requestContext = new WebAppContext();
+			requestContext.setContextPath( "/" );
+			// process all requests with Ruleset
+			ServletHolder requestServlet = new ServletHolder(
+			        new RequestServlet( this.ruleset ) );
+			requestContext.addServlet( requestServlet, "/*" );
+			requestContext.setBaseResource( new FileResource( new File( "." )
 			        .toURI().toURL() ) );
-			adminContext.setConnectorNames( new String[] { adminConnector
+			requestContext.setConnectorNames( new String[] { requestConnector
 			        .getName() } );
-			contexts.addHandler( adminContext );
-			WebAppContext logsContext = new WebAppContext();
-			logsContext.setContextPath( "/logs" );
-			logsContext.setBaseResource( new FileResource( new File( "logs" )
-			        .toURI().toURL() ) );
-			logsContext.setConnectorNames( new String[] { adminConnector
-			        .getName() } );
-			contexts.addHandler( logsContext );
-
+			contexts.addHandler( requestContext );
 		}
+		this.server.start();
+	}
 
-		// setup main connector
-		Connector requestConnector = this.setupRequestConnector();
-		server.addConnector( requestConnector );
-		WebAppContext requestContext = new WebAppContext();
-		requestContext.setContextPath( "/" );
-		// process all requests with Ruleset
-		ServletHolder requestServlet = new ServletHolder( new RequestServlet(
-		        this.ruleset ) );
-		requestContext.addServlet( requestServlet, "/*" );
-		requestContext.setBaseResource( new FileResource( new File( "." )
-		        .toURI().toURL() ) );
-		requestContext.setConnectorNames( new String[] { requestConnector
-		        .getName() } );
-		contexts.addHandler( requestContext );
-
-		server.start();
-		server.join();
+	/**
+	 * Stops the server and frees up the port again.
+	 * 
+	 * @throws Exception if server cannot be shutdown
+	 */
+	public void stop() throws Exception {
+		this.server.stop();
 	}
 
 	/**
@@ -145,13 +155,15 @@ public class MocksyServer {
 	 * @return the main connector
 	 */
 	protected Connector setupRequestConnector() {
-		File keystore = new File( this.keystore );
 		Connector connector = new SelectChannelConnector();
-		if ( keystore.exists() && keystore.isFile() ) {
-			SslSocketConnector sslConnector = new SslSocketConnector();
-			sslConnector.setKeystore( keystore.getAbsolutePath() );
-			sslConnector.setPassword( this.storepass );
-			connector = sslConnector;
+		if ( this.keystore != null ) {
+			File keystore = new File( this.keystore );
+			if ( keystore.exists() && keystore.isFile() ) {
+				SslSocketConnector sslConnector = new SslSocketConnector();
+				sslConnector.setKeystore( keystore.getAbsolutePath() );
+				sslConnector.setPassword( this.storepass );
+				connector = sslConnector;
+			}
 		}
 		connector.setPort( this.port );
 		return connector;

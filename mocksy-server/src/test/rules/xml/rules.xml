@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rules>
+<rules xmlns="http://mocksy.org/RULESET/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
+    
 	<rule file="test-one.xml">
 		<match>.*/test-one\.xml</match>
 		<filter class="org.mocksy.filter.XslFilter">
@@ -10,7 +13,7 @@
 		</filter>
 	</rule>
 
-	<default-response file="default.xml"/>
+	<default-rule file="default.xml"/>
 
 <!-- <rule file="response_3rd_masspay.xml">
 		<match xpath="//auth_actor/username" pattern="svulpius-biz2_api1.paypal.com" />

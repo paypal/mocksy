@@ -17,41 +17,24 @@ package org.mocksy.server.http;
  */
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.MalformedURLException;
 
 public class MockHttpRequest extends HttpRequest {
-	private Map<String, String> headers = new HashMap<String, String>();
-	private String url;
-	private Map<String, String[]> parameters = new HashMap<String, String[]>();
+	private MockHttpServletRequest servletRequest;
 	private InputStream data;
 
-	public MockHttpRequest(String url) {
-		super( null );
-		this.url = url;
+	public MockHttpRequest(String url) throws MalformedURLException {
+		super( new MockHttpServletRequest( url ) );
+		this.servletRequest = (MockHttpServletRequest) this.getServletRequest();
 	}
 
 	public void addHeader(String header, String value) {
-		this.headers.put( header, value );
-	}
-
-	@Override
-	public String getHeader(String headerName) {
-		return this.headers.get( headerName );
+		this.servletRequest.addHeader( header, value );
 	}
 
 	public void addParameter(String paramName, String[] values) {
-		this.parameters.put( paramName, values );
-	}
-
-	@Override
-	public String[] getParamValues(String param) {
-		return this.parameters.get( param );
-	}
-
-	@Override
-	public String getFullURL() {
-		return this.url;
+		this.servletRequest.addParameter( paramName, values );
+		this.servletRequest.setMethod( "POST" );
 	}
 
 	@Override
@@ -61,6 +44,7 @@ public class MockHttpRequest extends HttpRequest {
 
 	public void setData(InputStream data) {
 		this.data = data;
+		this.servletRequest.setMethod( "POST" );
 	}
 
 }

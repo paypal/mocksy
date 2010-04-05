@@ -30,6 +30,7 @@ import org.mocksy.rules.Rule;
 import org.mocksy.rules.Ruleset;
 import org.mocksy.rules.RulesetRule;
 import org.mocksy.rules.http.HttpMatcher;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -78,8 +79,8 @@ public class XmlSerializer {
 	{
 		Element rulesElement = rulesDoc.createElement( "rules" );
 		// default response
-		rulesElement.appendChild( getDefaultResponseElement( rulesDoc, rules
-		        .getDefaultResponse() ) );
+		rulesElement.appendChild( getDefaultRuleElement( rulesDoc, rules
+		        .getDefaultRule() ) );
 		// rules
 		for ( Rule rule : rules.getRules() ) {
 			rulesElement.appendChild( getRuleElement( rulesDoc, rule ) );
@@ -131,16 +132,15 @@ public class XmlSerializer {
 		return matcherElem;
 	}
 
-	private Node getDefaultResponseElement(Document rulesDoc,
-	        Response defaultResponse)
+	private Node getDefaultRuleElement(Document rulesDoc, Rule defaultRule)
+	        throws DOMException, IOException
 	{
-		Element defaultResponseElem = rulesDoc
-		        .createElement( "default-response" );
-		if ( defaultResponse != null ) {
-			populateResponseElement( rulesDoc, defaultResponseElem,
-			        defaultResponse );
+		Element defaultRuleElem = rulesDoc.createElement( "default-rule" );
+		if ( defaultRule != null ) {
+			defaultRuleElem
+			        .appendChild( getRuleElement( rulesDoc, defaultRule ) );
 		}
-		return defaultResponseElem;
+		return defaultRuleElem;
 	}
 
 	private void populateResponseElement(Document rulesDoc, Element element,

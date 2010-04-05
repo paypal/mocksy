@@ -18,7 +18,9 @@ package org.mocksy.config.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
 import org.mocksy.Response;
 import org.mocksy.config.Configurator;
 import org.mocksy.filter.ResponseFilter;
+import org.mocksy.rules.HttpProxyRule;
 import org.mocksy.rules.Matcher;
 import org.mocksy.rules.ResponseRule;
 import org.mocksy.rules.Rule;
@@ -52,11 +55,16 @@ public class XmlRulesetConfig implements Configurator {
 	private static final String HEADER_ATTRIB = "header";
 	private static final String PARAM_ATTRIB = "param";
 	private static final String RULE_TAG = "rule";
-	private static final String DEFAULT_RESPONSE_TAG = "default-response";
+	private static final String DEFAULT_RULE_TAG = "default-rule";
 	private static final String MATCH_TAG = "match";
 	private static final String RULESET_ATTRIB = "ruleset";
+	private static final String PROXY_HOST_ATTRIB = "proxy-host";
+	private static final String PROXY_PORT_ATTRIB = "proxy-port";
 	private static final String FILE_ATTRIB = "file";
 	private static final String CONTENT_TYPE_ATTRIB = "content-type";
+	private static final String RESPONSE_TAG = "response";
+	private static final String SOURCE_TAG = "source";
+	private static final String OPTIONS_TAG = "options";
 
 	private Ruleset ruleset;
 	private XmlSource source;
@@ -122,8 +130,8 @@ public class XmlRulesetConfig implements Configurator {
 		this.ruleset.clear();
 		Element ruleset = this.source.getRulesetElement();
 		String version = ruleset.getAttribute( "version" );
-		if (version == null) {
-			// this is for later, when we might have to change the 
+		if ( version == null ) {
+			// this is for later, when we might have to change the
 			// structure of the ruleset XML
 			version = "1.0";
 		}
@@ -131,32 +139,40 @@ public class XmlRulesetConfig implements Configurator {
 		NodeList nodeList = ruleset.getElementsByTagName( RULE_TAG );
 		for ( int i = 0; i < nodeList.getLength(); i++ ) {
 			Element ruleNode = (Element) nodeList.item( i );
-			Rule rule = null;
-			// Setup a RulesetRule
-			if ( ruleNode.hasAttribute( "ruleset" ) ) {
-				rule = getRulesetRule( ruleNode );
-			}
-			// Setup a ResponseRule
-			else {
-				rule = getResponseRule( ruleNode, i + 1 );
-			}
-			// Setup the Matchers for the Rule
-			NodeList matcherNodes = ruleNode.getElementsByTagName( MATCH_TAG );
-			for ( int j = 0; j < matcherNodes.getLength(); j++ ) {
-				Element elem = (Element) matcherNodes.item( j );
-				Matcher matcher = getMatcher( elem );
-				rule.addMatcher( matcher );
-			}
-			this.ruleset.addRule( rule );
+			this.ruleset
+			        .addRule( getRule( ruleNode, "Rule[" + ( i + 1 ) + "]" ) );
 		}
 		// Setup the default response
-		nodeList = ruleset.getElementsByTagName( DEFAULT_RESPONSE_TAG );
-		if ( nodeList.getLength() > 0 ) {
-			// there should only be one
-			Element ruleNode = (Element) nodeList.item( 0 );
-			this.ruleset
-			        .setDefaultResponse( getResponse( "default", ruleNode ) );
+		// TODO need to do the same thing here for custom responses.
+		Element defaultRuleNode = getSingleChild( ruleset, DEFAULT_RULE_TAG );
+		if ( defaultRuleNode == null ) {
+			throw new IOException( DEFAULT_RULE_TAG + " element is required." );
 		}
+		this.ruleset.setDefaultRule( getRule( defaultRuleNode, "default" ) );
+	}
+
+	private Rule getRule(Element ruleNode, String defaultId) throws Exception {
+		Rule rule = null;
+		// Setup a RulesetRule
+		if ( ruleNode.hasAttribute( RULESET_ATTRIB ) ) {
+			rule = getRulesetRule( ruleNode );
+		}
+		// Setup a ProxyRule
+		else if ( ruleNode.hasAttribute( PROXY_HOST_ATTRIB ) ) {
+			rule = getProxyRule( ruleNode );
+		}
+		// Setup a ResponseRule
+		else {
+			rule = getResponseRule( ruleNode, defaultId );
+		}
+		// Setup the Matchers for the Rule
+		NodeList matcherNodes = ruleNode.getElementsByTagName( MATCH_TAG );
+		for ( int j = 0; j < matcherNodes.getLength(); j++ ) {
+			Element elem = (Element) matcherNodes.item( j );
+			Matcher matcher = getMatcher( elem );
+			rule.addMatcher( matcher );
+		}
+		return rule;
 	}
 
 	private RulesetRule getRulesetRule(Element ruleNode) throws Exception {
@@ -165,40 +181,121 @@ public class XmlRulesetConfig implements Configurator {
 		        .getRelativeSource( rulesetName );
 		Ruleset subRuleset = new XmlRulesetConfig( subSource ).getRuleset();
 		return new RulesetRule( subRuleset );
-
 	}
 
-	private ResponseRule getResponseRule(Element ruleNode, int index)
+	private HttpProxyRule getProxyRule(Element ruleNode) throws Exception {
+		String proxyHost = getRequiredAttribute( ruleNode, PROXY_HOST_ATTRIB );
+		String proxyPort = getAttribute( ruleNode, PROXY_PORT_ATTRIB );
+		int port = 80;
+		if ( proxyPort != null ) {
+			port = Integer.parseInt( proxyPort );
+		}
+		return new HttpProxyRule( proxyHost, port );
+	}
+
+	private ResponseRule getResponseRule(Element ruleNode, String defaultId)
 	        throws Exception
 	{
 		// the (optional) id
 		String idAttrib = getAttribute( ruleNode, "id" );
-		String id = ( ( idAttrib != null ) ? idAttrib : "Rule[" + index + "]" );
+		String id = ( ( idAttrib != null ) ? idAttrib : defaultId );
 
 		return new ResponseRule( getResponse( id, ruleNode ) );
 
 	}
 
 	private Response getResponse(String id, Element ruleNode) throws Exception {
-		// get the filename
-		String fileName = getRequiredAttribute( ruleNode, FILE_ATTRIB );
-		// create response file object
-		URL responseURL = this.source.getRelativeURL( fileName );
+		String fileName = getAttribute( ruleNode, FILE_ATTRIB );
+		Class<Response> responseClass = null;
+		URL responseURL = null;
+		Map<String, String> options = new HashMap<String, String>();
+		if ( fileName != null ) {
+			responseURL = this.source.getRelativeURL( fileName );
+			responseClass = Response.class;
+		}
+		else {
+			Element responseNode = getSingleChild( ruleNode, RESPONSE_TAG );
+			if ( responseNode == null ) {
+				throw new IOException( "Element " + ruleNode.getNodeName()
+				        + " has no response data." );
+			}
+			String responseClassName = getRequiredAttribute( responseNode,
+			        CLASS_ATTRIB );
+			responseClass = (Class<Response>) Class.forName( responseClassName );
+			Element sourceNode = getSingleChild( responseNode, SOURCE_TAG );
+			if ( sourceNode == null ) {
+				throw new IOException( "Element " + RESPONSE_TAG + " needs a <"
+				        + SOURCE_TAG + "/> element." );
+			}
+			responseURL = this.source.getRelativeURL( sourceNode
+			        .getTextContent() );
+
+			Element optionsNode = getSingleChild( responseNode, OPTIONS_TAG );
+			if ( optionsNode != null ) {
+				NodeList optionNodes = optionsNode.getChildNodes();
+				for ( int i = 0; i < optionNodes.getLength(); i++ ) {
+					Node option = optionNodes.item( i );
+					options.put( option.getNodeName(), option.getTextContent() );
+				}
+			}
+		}
 
 		// the (optional) filter class
 		List<ResponseFilter> filters = getFilters( ruleNode );
+		Response response = this.createResponse( responseClass, id, responseURL
+		        .openStream(), filters );
+		if ( ruleNode.hasAttribute( "delay" ) ) {
+			response.setDelay( Integer.parseInt( ruleNode
+			        .getAttribute( "delay" ) ) );
+		}
 
 		String contentType = getAttribute( ruleNode, CONTENT_TYPE_ATTRIB );
 		if ( contentType == null ) {
 			contentType = figureOutContentType( fileName );
 		}
-		Response response = new Response( id, responseURL.openStream(),
-		        contentType, filters );
-		if ( ruleNode.hasAttribute( "delay" ) ) {
-			response.setDelay( Integer.parseInt( ruleNode
-			        .getAttribute( "delay" ) ) );
-		}
+		response.setContentType( contentType );
+
+		this.applyOptions( response, options );
 		return response;
+	}
+
+	private Response createResponse(Class<Response> responseClass, String id,
+	        InputStream responseContent, List<ResponseFilter> filters)
+	        throws Exception
+	{
+		try {
+			Constructor<Response> resConstructor = responseClass
+			        .getConstructor( String.class, InputStream.class,
+			                List.class );
+			Response response = resConstructor.newInstance( id,
+			        responseContent, filters );
+			return response;
+		}
+		catch ( Exception e ) {
+			// i know it's bad, but there are just too many exceptions here to
+			// deal with them one by one.
+			throw new Exception(
+			        "Couldn't create an instance of the desired response class: "
+			                + responseClass.getName(), e );
+		}
+
+	}
+
+	private void applyOptions(Response response, Map<String, String> options)
+	        throws IOException
+	{
+		// TODO this could use a lot of work
+		try {
+			for ( String key : options.keySet() ) {
+				String value = options.get( key );
+				Field field = response.getClass().getDeclaredField( key );
+				field.setAccessible( true );
+				field.set( response, value );
+			}
+		}
+		catch ( Exception e ) {
+			throw new IOException( "Could not apply options to response.", e );
+		}
 	}
 
 	private List<ResponseFilter> getFilters(Element ruleNode) throws Exception {
@@ -289,6 +386,14 @@ public class XmlRulesetConfig implements Configurator {
 			return null;
 		}
 		return elem.getAttribute( attribute );
+	}
+
+	private static Element getSingleChild(Element parent, String tagName) {
+		NodeList children = parent.getElementsByTagName( tagName );
+		if ( children.getLength() == 0 ) {
+			return null;
+		}
+		return (Element) children.item( 0 );
 	}
 
 }

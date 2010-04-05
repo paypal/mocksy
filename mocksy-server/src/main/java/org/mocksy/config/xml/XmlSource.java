@@ -19,13 +19,17 @@ package org.mocksy.config.xml;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.mocksy.config.Source;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Represents an XML-based Source.
@@ -33,6 +37,20 @@ import org.xml.sax.SAXException;
  * @author Saleem Shafi
  */
 abstract public class XmlSource implements Source {
+
+	private static ErrorHandler FATAL_ERROR_HANDLER = new DefaultHandler() {
+
+		@Override
+		public void error(SAXParseException e) throws SAXException {
+			throw e;
+		}
+
+		@Override
+		public void fatalError(SAXParseException e) throws SAXException {
+			throw e;
+		}
+
+	};
 
 	// TODO: clean up the throws clauses
 
@@ -66,7 +84,20 @@ abstract public class XmlSource implements Source {
 		        .newInstance();
 		domFactory.setNamespaceAware( false );
 		DocumentBuilder builder = domFactory.newDocumentBuilder();
+		builder.setErrorHandler( FATAL_ERROR_HANDLER );
 		Document doc = builder.parse( input );
+
+		URL schemaUrl = XmlSource.class.getClassLoader().getResource(
+		        "mocksy-ruleset.xsd" );
+		if ( schemaUrl != null ) {
+			// TODO figure out how to validate with a schema and actually make
+			// it work
+			// Schema schema = SchemaFactory.newInstance(
+			// javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI ).newSchema(
+			// schemaUrl );
+			// schema.newValidator().validate( new DOMSource( doc ) );
+		}
+
 		return doc.getDocumentElement();
 	}
 

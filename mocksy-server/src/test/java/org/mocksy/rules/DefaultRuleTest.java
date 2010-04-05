@@ -35,8 +35,8 @@ public class DefaultRuleTest {
 		// nested ruleset
 		this.nestedRuleset = new Ruleset();
 		// nested default rule
-		this.nestedRuleset.setDefaultResponse( new Response( "nested-default",
-		        "This is a nested default response.", "text/plain" ) );
+		this.nestedRuleset.setDefaultRule( new ResponseRule( new Response(
+		        "nested-default", "This is a nested default response." ) ) );
 
 		this.ruleset = new Ruleset();
 		// main "nested" rule
@@ -46,8 +46,8 @@ public class DefaultRuleTest {
 		nestedRule.addMatcher( nestedMatcher );
 		this.ruleset.addRule( nestedRule );
 		// main default rule
-		this.ruleset.setDefaultResponse( new Response( "default",
-		        "This is a default response.", "text/plain" ) );
+		this.ruleset.setDefaultRule( new ResponseRule( new Response( "default",
+		        "This is a default response." ) ) );
 	}
 
 	@Test

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rules>
-	<default-response file="error.nvp"/>
+<rules xmlns="http://mocksy.org/RULESET/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
 	
 	<rule id="success" file="success.nvp">
 		<match param="message">success</match>
 	</rule>
+
+	<default-rule file="error.nvp"/>
 </rules>

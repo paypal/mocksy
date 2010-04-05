@@ -40,7 +40,7 @@ import org.mocksy.config.Configurator;
 public class Ruleset {
 	private List<Rule> rules = new LinkedList<Rule>();
 	private Configurator config;
-	private Response defaultResponse;
+	private Rule defaultRule;
 
 	/**
 	 * Creates a Ruleset without an associated {@link org.mocksy.config.Configurator}.
@@ -67,7 +67,7 @@ public class Ruleset {
 	 */
 	public void clear() {
 		this.rules.clear();
-		this.defaultResponse = null;
+		this.defaultRule = null;
 	}
 
 	/**
@@ -81,13 +81,13 @@ public class Ruleset {
 	}
 
 	/**
-	 * Sets the {@link org.mocksy.Response} object to return if none
+	 * Sets the {@link org.mocksy.rules.Rule} object to return if none
 	 * of the Rules are suitable for a given Request.
 	 * 
-	 * @param defaultResponse the default Response for this set of Rules
+	 * @param defaultRule the default Rule for this ruleset
 	 */
-	public void setDefaultResponse(Response defaultResponse) {
-		this.defaultResponse = defaultResponse;
+	public void setDefaultRule(Rule defaultRule) {
+		this.defaultRule = defaultRule;
 	}
 
 	/**
@@ -125,19 +125,19 @@ public class Ruleset {
 		}
 		// if none of 'em match, send back a default response
 		if ( response == null ) {
-			response = this.defaultResponse;
+			response = this.defaultRule.process( request );
 		}
 		return response;
 	}
 
 	/**
-	 * Returns the default {@link org.mocksy.Response} instance for this
+	 * Returns the default {@link org.mocksy.rules.Rule} instance for this
 	 * Ruleset.
 	 * 
-	 * @return the default Response
+	 * @return the default Rule
 	 */
-	public Response getDefaultResponse() {
-		return this.defaultResponse;
+	public Rule getDefaultRule() {
+		return this.defaultRule;
 	}
 
 	/**

@@ -134,17 +134,37 @@ public class RequestServlet extends HttpServlet {
 			resp.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg );
 			return;
 		}
+		boolean isError = false;
+		if ( matchResponse instanceof HttpResponse ) {
+			HttpResponse httpResponse = (HttpResponse) matchResponse;
+			int statusCode = httpResponse.getStatusCode();
+			if ( statusCode < 400 ) {
+				resp.setStatus( statusCode );
+			}
+			else {
+				resp.sendError( statusCode );
+				isError = true;
+			}
 
-		String contentType = matchResponse.getContentType();
-		if ( contentType != null ) {
-			resp.setContentType( contentType );
+			for ( String headerName : httpResponse.getHeaderNames() ) {
+				String headerValue = httpResponse.getHeader( headerName );
+				resp.addHeader( headerName, headerValue );
+			}
 		}
-		// TODO: Need to be able to set status code
-		resp.setContentLength( data.length );
-		OutputStream out = resp.getOutputStream();
-		out.write( data );
-		out.flush();
-		resp.setStatus( HttpServletResponse.SC_OK );
+		else {
+			resp.setStatus( HttpServletResponse.SC_OK );
+		}
+
+		if ( !isError ) {
+			String contentType = matchResponse.getContentType();
+			if ( contentType != null ) {
+				resp.setContentType( contentType );
+			}
+			// resp.setContentLength( data.length );
+			OutputStream out = resp.getOutputStream();
+			out.write( data );
+			out.flush();
+		}
 		resp.flushBuffer();
 	}
 }

@@ -45,10 +45,10 @@ public class Response {
 	 * 
 	 * @param id Identifier for the response
 	 * @param content the response content as a String
-	 * @param contentType the MIME type of the content
 	 */
-	public Response(String id, String content, String contentType) {
-		this( id, new ByteArrayInputStream( content.getBytes() ), contentType );
+	public Response(String id, String content) {
+		this( id, new ByteArrayInputStream( content.getBytes() ) );
+		this.setContentType( "text/plain" );
 	}
 
 	/**
@@ -56,10 +56,10 @@ public class Response {
 	 * 
 	 * @param id Identifier for the response
 	 * @param content the response content as an InputStream
-	 * @param contentType the MIME type of the content
 	 */
-	public Response(String id, InputStream content, String contentType) {
-		this( id, content, contentType, Collections.EMPTY_LIST );
+	public Response(String id, InputStream content) {
+		this( id, content, Collections.EMPTY_LIST );
+		this.setContentType( "text/plain" );
 	}
 
 	/**
@@ -68,17 +68,23 @@ public class Response {
 	 * 
 	 * @param id Identifier for the response
 	 * @param content the response content as an InputStream
-	 * @param contentType the MIME type of the content
 	 * @param filters List of ResponseFilters
 	 */
-	public Response(String id, InputStream content, String contentType,
-	        List<ResponseFilter> filters)
+	public Response(String id, InputStream content, List<ResponseFilter> filters)
 	{
-		// TODO throw IllegalArgumentException if any of these are null
+		if ( id == null )
+		    throw new IllegalArgumentException(
+		            "Response must have an id value." );
+		if ( content == null )
+		    throw new IllegalArgumentException(
+		            "Response must have a content value" );
 		this.id = id;
 		this.stream = content;
-		this.contentType = contentType;
 		this.filters = filters;
+		if ( this.filters == null ) {
+			this.filters = Collections.emptyList();
+		}
+		this.setContentType( "text/plain" );
 	}
 
 	/**
@@ -164,6 +170,15 @@ public class Response {
 			logger.log( Level.SEVERE, "Error getting response data", e );
 			return e.getMessage();
 		}
+	}
+
+	/**
+	 * Sets the MIME content type for this response.
+	 * 
+	 * @param contentType MIME content type
+	 */
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	/**
