@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mocksy.org/RULESET/1.0.0"
+	xmlns:tns="http://mocksy.org/RULESET/1.0.0" elementFormDefault="qualified"
+	attributeFormDefault="unqualified" version="1.0.0">
+
+	<element name="rules" type="tns:Ruleset"></element>
+
+	<complexType name="Ruleset">
+		<sequence>
+			<element name="rule" type="tns:Rule" minOccurs="0" maxOccurs="unbounded">
+			</element>
+			<element name="default-rule" type="tns:DefaultRule"
+				minOccurs="1" maxOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="Rule">
+		<sequence>
+			<element name="response" type="tns:Response" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="match" type="tns:Match" maxOccurs="unbounded"
+				minOccurs="1">
+			</element>
+			<element name="filter" type="tns:Filter"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="id" type="string"></attribute>
+		<attribute name="file" type="string"></attribute>
+		<attribute name="ruleset" type="string"></attribute>
+		<attribute name="proxy-host" type="string"></attribute>
+		<attribute name="proxy-port" type="int"></attribute>
+	</complexType>
+
+	<complexType name="Match">
+		<simpleContent>
+			<extension base="string">
+				<attribute name="header" type="string"></attribute>
+				<attribute name="param" type="string"></attribute>
+				<attribute name="class" type="string"></attribute>
+				<attribute name="xpath" type="string"></attribute>
+			</extension>
+		</simpleContent>
+	</complexType>
+
+	<complexType name="Filter">
+		<sequence>
+			<any minOccurs="0" maxOccurs="unbounded" processContents="lax"></any>
+		</sequence>
+		<attribute name="class" type="string"></attribute>
+	</complexType>
+
+	<complexType name="Response">
+		<sequence>
+			<element name="options" type="tns:ResponseOptions" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="source" type="string"></element>
+		</sequence>
+		<attribute name="class" type="string"></attribute>
+	</complexType>
+
+	<complexType name="ResponseOptions">
+		<sequence>
+			<any minOccurs="0" maxOccurs="unbounded" processContents="lax"></any>
+		</sequence>
+	</complexType>
+
+	<complexType name="DefaultRule">
+		<sequence>
+			<element name="response" type="tns:Response" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="filter" type="tns:Filter"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="file" type="string"></attribute>
+		<attribute name="ruleset" type="string"></attribute>
+		<attribute name="proxy-host" type="string"></attribute>
+		<attribute name="proxy-port" type="int"></attribute>
+	</complexType>
+</schema>
