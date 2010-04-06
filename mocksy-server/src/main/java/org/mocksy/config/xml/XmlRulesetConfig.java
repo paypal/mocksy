@@ -48,6 +48,9 @@ import org.w3c.dom.NodeList;
  * 
  * @author Saleem Shafi
  */
+// TODO Introduce a RulesetFactory class
+// TODO allow RulesetFactory class in CLI
+// TODO allow RulesetFactory class in RulesetRules
 public class XmlRulesetConfig implements Configurator {
 	private static final String FILTER_TAG = "filter";
 	private static final String XPATH_ATTRIB = "xpath";
