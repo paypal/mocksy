@@ -42,13 +42,7 @@ public class InterpolatingInputStreamTest {
 		InterpolatingInputStream filteredStream = new InterpolatingInputStream(
 		        new ByteArrayInputStream( originalText.getBytes() ), properties );
 		byte[] data = new byte[4096];
-		int i = 0;
-		while ( filteredStream.available() > 0 ) {
-			int value = filteredStream.read();
-			if ( value != -1 ) {
-				data[i++] = (byte) value;
-			}
-		}
+		int i = filteredStream.read( data );
 		return new String( data, 0, i );
 
 	}
@@ -60,11 +54,9 @@ public class InterpolatingInputStreamTest {
 		        new ByteArrayInputStream( originalText.getBytes() ), properties );
 		StringBuffer returnValue = new StringBuffer();
 		byte[] data = new byte[4096];
-		while ( filteredStream.available() > 0 ) {
-			int length = filteredStream.read( data );
-			if ( length != -1 ) {
-				returnValue.append( new String( data, 0, length ) );
-			}
+		int length = -1;
+		while ( ( length = filteredStream.read( data ) ) > 0 ) {
+			returnValue.append( new String( data, 0, length ) );
 		}
 		return returnValue.toString();
 	}

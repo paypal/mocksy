@@ -34,8 +34,6 @@ import org.mocksy.Response;
 import org.mocksy.server.http.HttpRequest;
 import org.mocksy.server.http.HttpResponse;
 
-// TODO apparently chunking doesn't work
-
 public class HttpProxyRule implements Rule {
 	private Collection<Matcher> matchers = new ArrayList<Matcher>();
 	private String proxyHost;
@@ -110,6 +108,8 @@ public class HttpProxyRule implements Rule {
 		if ( "GET".equals( request.getMethod() ) ) {
 			method = new GetMethod( proxyUrl );
 			method.setFollowRedirects( true );
+			method.setRequestHeader( "Cache-Control", "no-cache" );
+			method.setRequestHeader( "Pragma", "no-cache" );
 		}
 		else if ( "POST".equals( request.getMethod() ) ) {
 			method = new PostMethod( proxyUrl );
@@ -130,6 +130,7 @@ public class HttpProxyRule implements Rule {
 		Enumeration headers = request.getHeaderNames();
 		while ( headers.hasMoreElements() ) {
 			String header = (String) headers.nextElement();
+			if ( "If-Modified-Since".equals( header ) ) continue;
 			Enumeration values = request.getHeaders( header );
 			while ( values.hasMoreElements() ) {
 				String value = (String) values.nextElement();

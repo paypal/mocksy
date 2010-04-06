@@ -31,6 +31,7 @@ import org.mocksy.filter.ResponseFilter;
  * Basic abstraction for a service response.
  */
 public class Response {
+	private static final int BUFFER_SIZE = 1024 * 10;
 	private static final Logger logger = Logger.getLogger( Response.class
 	        .getName() );
 	private String id;
@@ -128,10 +129,10 @@ public class Response {
 		try {
 			// process through the filters
 			stream = this.getFilteredStream( new ByteArrayInputStream( data ) );
-			while ( stream.available() > 0 ) {
-				byte[] bytes = new byte[stream.available()];
-				int numBytes = stream.read( bytes );
-				responseData.write( bytes, 0, numBytes );
+			byte[] bytes = new byte[BUFFER_SIZE];
+			int read = -1;
+			while ( ( read = stream.read( bytes ) ) > -1 ) {
+				responseData.write( bytes, 0, read );
 			}
 		}
 		finally {
@@ -230,7 +231,14 @@ public class Response {
 	private synchronized byte[] getData() {
 		if ( this.data == null && this.stream != null ) {
 			try {
-				this.data = new byte[this.stream.available()];
+				ByteArrayOutputStream output = new ByteArrayOutputStream();
+				byte[] buffer = new byte[BUFFER_SIZE];
+				int read = -1;
+				while ( ( read = this.stream.read( buffer ) ) > -1 ) {
+					output.write( buffer, 0, read );
+				}
+				this.data = output.toByteArray();
+				output.close();
 				this.stream.read( this.data );
 			}
 			catch ( IOException e ) {
