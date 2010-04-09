@@ -27,6 +27,7 @@ import org.mocksy.rules.http.HttpMatcher;
 import org.mocksy.server.http.MockHttpRequest;
 
 public class DefaultRuleTest {
+	private static final String BASE_URL = "http://localhost";
 	private Ruleset ruleset;
 	private Ruleset nestedRuleset;
 
@@ -52,7 +53,7 @@ public class DefaultRuleTest {
 
 	@Test
 	public void testMatchDefaultRule() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/" );
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );
 		assertEquals( "default", response.getId() );
@@ -61,7 +62,7 @@ public class DefaultRuleTest {
 
 	@Test
 	public void testMatchNestedRulesetDefaultRule() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/nested/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/nested/" );
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );
 		assertEquals( "nested-default", response.getId() );
@@ -70,7 +71,7 @@ public class DefaultRuleTest {
 
 	@Test
 	public void testMissWithNoDefaultRule() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/" );
 		this.ruleset.clear();
 		Response response = this.ruleset.process( request );
 		assertNull( response );
@@ -78,7 +79,7 @@ public class DefaultRuleTest {
 
 	@Test
 	public void testMissNestedWithNoDefaultRule() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/nested/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/nested/" );
 		this.ruleset.clear();
 
 		RulesetRule nestedRule = new RulesetRule( this.nestedRuleset );
@@ -95,7 +96,7 @@ public class DefaultRuleTest {
 
 	@Test
 	public void testMissNestedWithMainDefault() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/nested/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/nested/" );
 		this.nestedRuleset.clear();
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );

@@ -124,7 +124,7 @@ public class Ruleset {
 			}
 		}
 		// if none of 'em match, send back a default response
-		if ( response == null ) {
+		if ( response == null && this.defaultRule != null ) {
 			response = this.defaultRule.process( request );
 		}
 		return response;

@@ -28,6 +28,7 @@ import org.mocksy.rules.xml.XmlMatcher;
 import org.mocksy.server.http.MockHttpRequest;
 
 public class MatcherTest {
+	private static final String BASE_URL = "http://localhost";
 	private Ruleset ruleset;
 	private Ruleset nestedRuleset;
 
@@ -82,7 +83,7 @@ public class MatcherTest {
 
 	@Test
 	public void testMatchXPath() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/nested/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/nested/" );
 		request.setData( new ByteArrayInputStream( "<envelope>empty</envelope>"
 		        .getBytes() ) );
 		Response response = this.ruleset.process( request );
@@ -96,7 +97,7 @@ public class MatcherTest {
 
 	@Test
 	public void testMatchURI() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/resp-one/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/resp-one/" );
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );
 		assertEquals( "response-one", response.getId() );
@@ -105,7 +106,7 @@ public class MatcherTest {
 
 	@Test
 	public void testMatchHeader() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/" );
 		request.addHeader( "testHeader", "two" );
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );
@@ -115,7 +116,7 @@ public class MatcherTest {
 
 	@Test
 	public void testMatchParam() throws Exception {
-		MockHttpRequest request = new MockHttpRequest( "/" );
+		MockHttpRequest request = new MockHttpRequest( BASE_URL + "/" );
 		request.addParameter( "testParam", new String[] { "three" } );
 		Response response = this.ruleset.process( request );
 		assertNotNull( response );

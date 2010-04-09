@@ -42,8 +42,12 @@ public class InterpolatingInputStreamTest {
 		InterpolatingInputStream filteredStream = new InterpolatingInputStream(
 		        new ByteArrayInputStream( originalText.getBytes() ), properties );
 		byte[] data = new byte[4096];
-		int i = filteredStream.read( data );
-		return new String( data, 0, i );
+		String result = "";
+		int i = -1;
+		while ( ( i = filteredStream.read( data ) ) > -1 ) {
+			result += new String( data, 0, i );
+		}
+		return result;
 
 	}
 
