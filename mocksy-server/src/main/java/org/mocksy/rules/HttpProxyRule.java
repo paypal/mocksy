@@ -36,12 +36,10 @@ import org.mocksy.server.http.HttpResponse;
 
 public class HttpProxyRule implements Rule {
 	private Collection<Matcher> matchers = new ArrayList<Matcher>();
-	private String proxyHost;
-	private int proxyPort;
+	private String proxyUrl;
 
-	public HttpProxyRule(String proxyHost, int proxyPort) {
-		this.proxyHost = proxyHost;
-		this.proxyPort = proxyPort;
+	public HttpProxyRule(String proxyUrl) {
+		this.proxyUrl = proxyUrl;
 		this.clear();
 	}
 
@@ -59,6 +57,10 @@ public class HttpProxyRule implements Rule {
 
 	public void clear() {
 		this.matchers.clear();
+	}
+
+	public String getProxyUrl() {
+		return this.proxyUrl;
 	}
 
 	public Response process(Request request) throws Exception {
@@ -99,7 +101,7 @@ public class HttpProxyRule implements Rule {
 	}
 
 	protected HttpMethod getProxyMethod(HttpServletRequest request) {
-		String proxyUrl = "http://" + this.proxyHost + ":" + this.proxyPort;
+		String proxyUrl = this.proxyUrl;
 		proxyUrl += request.getPathInfo();
 		if ( request.getQueryString() != null ) {
 			proxyUrl += "?" + request.getQueryString();

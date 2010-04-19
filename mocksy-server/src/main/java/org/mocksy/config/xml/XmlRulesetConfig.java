@@ -61,8 +61,7 @@ public class XmlRulesetConfig implements Configurator {
 	private static final String DEFAULT_RULE_TAG = "default-rule";
 	private static final String MATCH_TAG = "match";
 	private static final String RULESET_ATTRIB = "ruleset";
-	private static final String PROXY_HOST_ATTRIB = "proxy-host";
-	private static final String PROXY_PORT_ATTRIB = "proxy-port";
+	private static final String PROXY_URL_ATTRIB = "proxy-url";
 	private static final String FILE_ATTRIB = "file";
 	private static final String CONTENT_TYPE_ATTRIB = "content-type";
 	private static final String RESPONSE_TAG = "response";
@@ -161,7 +160,7 @@ public class XmlRulesetConfig implements Configurator {
 			rule = getRulesetRule( ruleNode );
 		}
 		// Setup a ProxyRule
-		else if ( ruleNode.hasAttribute( PROXY_HOST_ATTRIB ) ) {
+		else if ( ruleNode.hasAttribute( PROXY_URL_ATTRIB ) ) {
 			rule = getProxyRule( ruleNode );
 		}
 		// Setup a ResponseRule
@@ -187,13 +186,8 @@ public class XmlRulesetConfig implements Configurator {
 	}
 
 	private HttpProxyRule getProxyRule(Element ruleNode) throws Exception {
-		String proxyHost = getRequiredAttribute( ruleNode, PROXY_HOST_ATTRIB );
-		String proxyPort = getAttribute( ruleNode, PROXY_PORT_ATTRIB );
-		int port = 80;
-		if ( proxyPort != null ) {
-			port = Integer.parseInt( proxyPort );
-		}
-		return new HttpProxyRule( proxyHost, port );
+		String proxyHost = getRequiredAttribute( ruleNode, PROXY_URL_ATTRIB );
+		return new HttpProxyRule( proxyHost );
 	}
 
 	private ResponseRule getResponseRule(Element ruleNode, String defaultId)
