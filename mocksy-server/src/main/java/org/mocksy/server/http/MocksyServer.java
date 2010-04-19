@@ -217,8 +217,12 @@ public class MocksyServer {
 		CommandLineParser parser = new GnuParser();
 		Options options = new Options();
 		options.addOption( "h", "help", false, "show this message" );
-		options.addOption( "r", "ruleset", true,
-		        "root configuration directory (default: working directory)" );
+		options
+		        .addOption(
+		                "r",
+		                "ruleset",
+		                true,
+		                "root configuration directory, URL or Java class name (default: working directory)" );
 		options.addOption( "p", "port", true,
 		        "port that server will listen on (default: 8080)" );
 		options

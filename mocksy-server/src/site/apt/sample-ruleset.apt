@@ -5,17 +5,17 @@ features:
 
 +----------------------------------------------------
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset version="1.0">
-	<default-response file="error.txt">
-		<filter class="org.mocksy.filter.PropertyFilter">
-			<base_url>http://localhost/</base_url>
-		</filter>
-	</default-response>
+<rules xmlns="http://mocksy.org/RULESET/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
 
 	<rule id="http-matchers" ruleset="rest/rest-rules.xml">
 		<match header="Accept">application/x-www-form-urlencoded</match>
 		<match param="username">new_user</match>
 		<match>/account/.*/</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<version>1.4</version>
+		</filter>
 	</rule>
 
 	<rule id="xpath-matcher" response="xml/categories.xml">
@@ -25,5 +25,7 @@ features:
 			<stylesheet>html.xslt</stylesheet>
 		</filter>
 	</rule>
+
+	<default-rule proxy-rule="http://mocksy.org/" />
 </ruleset>
 +----------------------------------------------------
