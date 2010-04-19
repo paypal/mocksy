@@ -80,7 +80,7 @@ public class ProxyTest {
 
 	@Test
 	public void testProxyNoConnection() throws Exception {
-		HttpProxyRule proxyRule = new HttpProxyRule( "127.0.0.1", 11111 );
+		HttpProxyRule proxyRule = new HttpProxyRule( "http://127.0.0.1:11111" );
 		HttpMatcher matcher = new HttpMatcher();
 		matcher
 		        .setPattern( Pattern
@@ -97,7 +97,7 @@ public class ProxyTest {
 
 	@Test
 	public void testProxySuccess() throws Exception {
-		HttpProxyRule proxyRule = new HttpProxyRule( "127.0.0.1", 11112 );
+		HttpProxyRule proxyRule = new HttpProxyRule( "http://127.0.0.1:11112" );
 		HttpMatcher matcher = new HttpMatcher();
 		matcher
 		        .setPattern( Pattern
@@ -116,7 +116,7 @@ public class ProxyTest {
 	// Tests proxying of POST parameters and error code
 	@Test
 	public void testProxyWithHttpErrorCode() throws Exception {
-		HttpProxyRule proxyRule = new HttpProxyRule( "127.0.0.1", 11112 );
+		HttpProxyRule proxyRule = new HttpProxyRule( "http://127.0.0.1:11112" );
 		HttpMatcher matcher = new HttpMatcher();
 		matcher
 		        .setPattern( Pattern
@@ -136,7 +136,7 @@ public class ProxyTest {
 	// Tests proxying of both request and response headers
 	@Test
 	public void testProxyWithCustomHeaders() throws Exception {
-		HttpProxyRule proxyRule = new HttpProxyRule( "127.0.0.1", 11112 );
+		HttpProxyRule proxyRule = new HttpProxyRule( "http://127.0.0.1:11112" );
 		HttpMatcher matcher = new HttpMatcher();
 		matcher
 		        .setPattern( Pattern
