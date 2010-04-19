@@ -58,6 +58,7 @@ public class RulesServlet extends HttpServlet {
 	        throws ServletException, IOException
 	{
 		if ( this.rules != null ) {
+			resp.setContentType( "application/xml" );
 			XmlSerializer serializer = new XmlSerializer( resp
 			        .getOutputStream() );
 			serializer.serialize( this.rules );

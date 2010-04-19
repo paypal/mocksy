@@ -24,6 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.serialize.XMLSerializer;
 import org.mocksy.Response;
 import org.mocksy.filter.ResponseFilter;
+import org.mocksy.rules.HttpProxyRule;
 import org.mocksy.rules.Matcher;
 import org.mocksy.rules.ResponseRule;
 import org.mocksy.rules.Rule;
@@ -107,6 +108,10 @@ public class XmlSerializer {
 		else if ( rule instanceof RulesetRule ) {
 			ruleElem.appendChild( getRulesetElement( rulesDoc,
 			        ( (RulesetRule) rule ).getRuleset() ) );
+		}
+		else if ( rule instanceof HttpProxyRule ) {
+			ruleElem.setAttribute( "proxy-url", ( (HttpProxyRule) rule )
+			        .getProxyUrl() );
 		}
 		return ruleElem;
 	}
