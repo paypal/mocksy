@@ -14,5 +14,6 @@
     	<item name="Rulesets" href="rulesets/index.html"/>
     	<item name="Archives" href="download/archives.html"/>
     </menu>
+	<menu ref="reports"/>
   </body>
 </project>
