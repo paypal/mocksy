@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.mocksy.Request;
 import org.mocksy.Response;
-import org.mocksy.config.Configurator;
+import org.mocksy.config.UpdateableRulesetFactory;
 
 /**
  * Represents a group of {@link org.mocksy.rules.Rule}s.  The only reason
@@ -31,7 +31,7 @@ import org.mocksy.config.Configurator;
  * and the list of rules in another (see the documentation about XML configuration
  * files).
  * 
- * A Ruleset can be associated with a {@link org.mocksy.config.Configurator},
+ * A Ruleset can be associated with a {@link org.mocksy.config.UpdateableRulesetFactory},
  * which allows it to be easily updated during runtime, e.g. responding to
  * updates in file-based configuration without need to recycling the server.
  *  
@@ -39,30 +39,30 @@ import org.mocksy.config.Configurator;
  */
 public class Ruleset {
 	private List<Rule> rules = new LinkedList<Rule>();
-	private Configurator config;
+	private UpdateableRulesetFactory updateableFactory;
 	private Rule defaultRule;
 
 	/**
-	 * Creates a Ruleset without an associated {@link org.mocksy.config.Configurator}.
+	 * Creates a Ruleset without an associated {@link org.mocksy.config.UpdateableRulesetFactory}.
 	 */
 	public Ruleset() {
 		this.clear();
 	}
 
 	/**
-	 * Creates a Ruleset with an associated {@link org.mocksy.config.Configurator},
+	 * Creates a Ruleset with an associated {@link org.mocksy.config.UpdateableRulesetFactory},
 	 * which will help to update the contents of the Ruleset, if needed.
 	 * 
-	 * @param config the Configurator instance used to build this Ruleset
+	 * @param config the UpdateableRulesetFactory instance used to build this Ruleset
 	 */
-	public Ruleset(Configurator config) {
+	public Ruleset(UpdateableRulesetFactory factory) {
 		this();
-		this.config = config;
+		this.updateableFactory = factory;
 	}
 
 	/**
 	 * Clears the contents of this Ruleset in preparation for it to be re-populated
-	 * either by the {@link org.mocksy.config.Configurator} or programmatically
+	 * either by the {@link org.mocksy.config.UpdateableRulesetFactory} or programmatically
 	 * for the first time.
 	 */
 	public void clear() {
@@ -95,12 +95,12 @@ public class Ruleset {
 	 * Rules can be used to generate a Response.  If not, the default
 	 * response is returned.
 	 * 
-	 * Before processing the Request, if a {@link org.mocksy.config.Configurator}
+	 * Before processing the Request, if a {@link org.mocksy.config.UpdateableRulesetFactory}
 	 * was provided, we'll first check for updates to the configuration
 	 * and update the contents of the Ruleset before continuing with
 	 * the processing.
 	 * 
-	 * Note: The logic that updates the Ruleset based on the Configurator
+	 * Note: The logic that updates the Ruleset based on the UpdateableRulesetFactory
 	 * is synchronized, so it should be thread-safe.
 	 * 
 	 * @param request the Request to process
@@ -110,9 +110,9 @@ public class Ruleset {
 	 */
 	public Response process(Request request) throws Exception {
 		// make sure we've got the most up-to-date configuration
-		if ( this.config != null ) {
-			synchronized ( this.config ) {
-				this.config.checkForUpdates();
+		if ( this.updateableFactory != null ) {
+			synchronized ( this.updateableFactory ) {
+				this.updateableFactory.checkForUpdates();
 			}
 		}
 		Response response = null;

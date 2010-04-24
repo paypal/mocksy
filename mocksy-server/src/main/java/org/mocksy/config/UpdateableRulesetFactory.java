@@ -25,7 +25,7 @@ package org.mocksy.config;
  * is processed and offers the opportunity to update the ruleset with new
  * values.
  */
-public interface Configurator {
+public interface UpdateableRulesetFactory extends RulesetFactory {
 
 	/**
 	 * Checks to see if the source of the configuration has been updated,

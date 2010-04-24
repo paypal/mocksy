@@ -17,7 +17,6 @@ package org.mocksy.server.http;
  */
 
 import java.io.File;
-import java.net.URL;
 import java.util.logging.LogManager;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -25,7 +24,8 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.mocksy.config.xml.XmlRulesetConfig;
+import org.mocksy.config.RulesetFactory;
+import org.mocksy.config.RulesetFactoryFactory;
 import org.mocksy.rules.Ruleset;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -198,7 +198,9 @@ public class MocksyServer {
 		boolean startAdminServlet = line.hasOption( 'a' );
 		int port = Integer.parseInt( line.getOptionValue( 'p', "8080" ) );
 
-		Ruleset mocksy = getRuleset( rulesLocation );
+		RulesetFactory factory = RulesetFactoryFactory
+		        .getRulesetFactory( rulesLocation );
+		Ruleset mocksy = factory.getRuleset();
 		MocksyServer server = new MocksyServer( mocksy, port );
 		server.startAdminPort( startAdminServlet );
 		server.setKeystore( keystore, password );
@@ -248,28 +250,6 @@ public class MocksyServer {
 			System.exit( 0 );
 		}
 		return line;
-	}
-
-	/**
-	 * Return a Ruleset found at the given location.  If the location
-	 * starts with 'http', we'll load it as a URL; otherwise, we
-	 * assume it's a local file.
-	 * 
-	 * @param rulesLocation the location of the ruleset
-	 * @return the Ruleset
-	 * @throws Exception if there's a problem loading the Ruleset
-	 */
-	static Ruleset getRuleset(String rulesLocation) throws Exception {
-		Ruleset mocksy = null;
-		if ( rulesLocation.startsWith( "http" ) ) {
-			mocksy = new XmlRulesetConfig( new URL( rulesLocation ) )
-			        .getRuleset();
-		}
-		else {
-			mocksy = new XmlRulesetConfig( new File( rulesLocation ) )
-			        .getRuleset();
-		}
-		return mocksy;
 	}
 
 	public static void configureLogger() {

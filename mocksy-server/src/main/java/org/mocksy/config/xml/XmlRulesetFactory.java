@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.mocksy.Response;
-import org.mocksy.config.Configurator;
+import org.mocksy.config.UpdateableRulesetFactory;
 import org.mocksy.filter.ResponseFilter;
 import org.mocksy.rules.HttpProxyRule;
 import org.mocksy.rules.Matcher;
@@ -43,15 +43,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Configurator that sets up Rulesets and the related components from XML
- * files.
+ * RulesetFactory that sets up Rulesets and the related components from XML
+ * files.  This Factory is updateable based on the needsUpdate logic of the
+ * Source.
  * 
  * @author Saleem Shafi
  */
-// TODO Introduce a RulesetFactory class
 // TODO allow RulesetFactory class in CLI
 // TODO allow RulesetFactory class in RulesetRules
-public class XmlRulesetConfig implements Configurator {
+public class XmlRulesetFactory implements UpdateableRulesetFactory {
 	private static final String FILTER_TAG = "filter";
 	private static final String XPATH_ATTRIB = "xpath";
 	private static final String CLASS_ATTRIB = "class";
@@ -72,34 +72,34 @@ public class XmlRulesetConfig implements Configurator {
 	private XmlSource source;
 
 	/**
-	 * Creates the Configurator from the given Source.
+	 * Creates the RulesetFactory from the given Source.
 	 * 
 	 * @param source the XmlSource containing the Ruleset info
 	 * @throws Exception
 	 */
-	public XmlRulesetConfig(XmlSource source) throws Exception {
+	public XmlRulesetFactory(XmlSource source) throws Exception {
 		this.source = source;
 		this.ruleset = new Ruleset( this );
 		this.updateData();
 	}
 
 	/**
-	 * Creates the Configurator from the given File.
+	 * Creates the RulesetFactory from the given File.
 	 * 
 	 * @param rulesetFile the File containing the XML Ruleset data
 	 * @throws Exception
 	 */
-	public XmlRulesetConfig(File rulesetFile) throws Exception {
+	public XmlRulesetFactory(File rulesetFile) throws Exception {
 		this( new FileXmlSource( rulesetFile ) );
 	}
 
 	/**
-	 * Creates the Configurator from the given URL.
+	 * Creates the RulesetFactory from the given URL.
 	 * 
 	 * @param rulesetURL the URL containing the XML Ruleset data
 	 * @throws Exception
 	 */
-	public XmlRulesetConfig(URL rulesetURL) throws Exception {
+	public XmlRulesetFactory(URL rulesetURL) throws Exception {
 		this( new UrlXmlSource( rulesetURL ) );
 	}
 
@@ -181,7 +181,7 @@ public class XmlRulesetConfig implements Configurator {
 		String rulesetName = getRequiredAttribute( ruleNode, RULESET_ATTRIB );
 		XmlSource subSource = (XmlSource) this.source
 		        .getRelativeSource( rulesetName );
-		Ruleset subRuleset = new XmlRulesetConfig( subSource ).getRuleset();
+		Ruleset subRuleset = new XmlRulesetFactory( subSource ).getRuleset();
 		return new RulesetRule( subRuleset );
 	}
 
