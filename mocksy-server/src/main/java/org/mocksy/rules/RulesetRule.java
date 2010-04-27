@@ -59,7 +59,7 @@ public class RulesetRule implements Rule {
 		this.matchers.add( matcher );
 	}
 
-	public boolean matches(Request request) throws Exception {
+	public boolean matches(Request request) {
 		if ( this.matchers.isEmpty() ) return false;
 		for ( Matcher matcher : this.matchers ) {
 			if ( !matcher.matches( request ) ) return false;

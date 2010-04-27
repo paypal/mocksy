@@ -53,9 +53,8 @@ public interface Rule {
 	 * 
 	 * @param request
 	 * @return whether or not this Rule can handle the given Request
-	 * @throws Exception
 	 */
-	boolean matches(Request request) throws Exception;
+	boolean matches(Request request);
 
 	/**
 	 * Processes the given Request.  The {@link #matches(Request)} method 

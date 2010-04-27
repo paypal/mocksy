@@ -34,7 +34,7 @@ public class ResponseRule implements Rule {
 		this.matchers.add( matcher );
 	}
 
-	public boolean matches(Request request) throws Exception {
+	public boolean matches(Request request) {
 		if ( this.matchers.isEmpty() ) return false;
 		for ( Matcher matcher : this.matchers ) {
 			if ( !matcher.matches( request ) ) return false;
@@ -46,7 +46,7 @@ public class ResponseRule implements Rule {
 		this.matchers.clear();
 	}
 
-	public Response process(Request request) throws Exception {
+	public Response process(Request request) {
 		return this.response;
 	}
 
