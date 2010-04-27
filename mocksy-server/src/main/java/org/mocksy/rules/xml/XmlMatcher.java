@@ -72,10 +72,10 @@ public class XmlMatcher extends Matcher {
 		}
 		// there are no query matches, just bail out now
 		if ( values == null || values.length == 0 ) {
-			return false;
+			return this.isNegative();
 		}
 		// otherwise see if any of them match the pattern
-		return this.matchValues( values );
+		return this.matchValues( values ) ^ this.isNegative();
 	}
 
 	/**

@@ -60,6 +60,7 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 	private static final String RULE_TAG = "rule";
 	private static final String DEFAULT_RULE_TAG = "default-rule";
 	private static final String MATCH_TAG = "match";
+	private static final String NOT_MATCH_TAG = "not-match";
 	private static final String RULESET_ATTRIB = "ruleset";
 	private static final String PROXY_URL_ATTRIB = "proxy-url";
 	private static final String FILE_ATTRIB = "file";
@@ -169,9 +170,21 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		}
 		// Setup the Matchers for the Rule
 		NodeList matcherNodes = ruleNode.getElementsByTagName( MATCH_TAG );
+		NodeList notMatcherNodes = ruleNode
+		        .getElementsByTagName( NOT_MATCH_TAG );
+		if ( matcherNodes.getLength() + notMatcherNodes.getLength() <= 0 ) {
+			throw new IOException( "At least one <" + MATCH_TAG + "> or <"
+			        + NOT_MATCH_TAG + "> tag must be defined" );
+		}
 		for ( int j = 0; j < matcherNodes.getLength(); j++ ) {
 			Element elem = (Element) matcherNodes.item( j );
 			Matcher matcher = getMatcher( elem );
+			rule.addMatcher( matcher );
+		}
+		for ( int j = 0; j < notMatcherNodes.getLength(); j++ ) {
+			Element elem = (Element) notMatcherNodes.item( j );
+			Matcher matcher = getMatcher( elem );
+			matcher.setNegative( true );
 			rule.addMatcher( matcher );
 		}
 		return rule;

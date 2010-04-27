@@ -71,12 +71,12 @@ public class HttpMatcher extends Matcher {
 	}
 
 	@Override
-	public boolean matches(Request request) throws Exception {
+	public boolean matches(Request request) {
 		// We can only match against HttpRequests
 		if ( !( request instanceof HttpRequest ) ) {
 			logger.log( Level.WARNING,
 			        "Trying to process a non-HTTP request as HTTP." );
-			return false;
+			return this.isNegative();
 		}
 		HttpRequest httpRequest = ( (HttpRequest) request );
 		String[] values = null;
@@ -112,7 +112,7 @@ public class HttpMatcher extends Matcher {
 			// would be nice to be able to get post data
 		}
 
-		return this.matchValues( values );
+		return this.matchValues( values ) ^ this.isNegative();
 	}
 
 	@Override

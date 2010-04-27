@@ -17,7 +17,9 @@ package org.mocksy.rules;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.util.regex.Pattern;
 import org.junit.Before;
@@ -122,5 +124,24 @@ public class MatcherTest {
 		assertNotNull( response );
 		assertEquals( "response-three", response.getId() );
 		assertEquals( "This is the third response", response.toString() );
+	}
+
+	@Test
+	public void testHttpMatch() throws Exception {
+		HttpMatcher matcher = new HttpMatcher();
+		matcher.setPattern( Pattern.compile( ".*/matched/.*" ) );
+
+		assertFalse( matcher.isNegative() );
+		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL
+		        + "/matched/" ) ) );
+		assertFalse( matcher.matches( new MockHttpRequest( BASE_URL
+		        + "/not-matched/" ) ) );
+
+		matcher.setNegative( true );
+		assertTrue( matcher.isNegative() );
+		assertFalse( matcher.matches( new MockHttpRequest( BASE_URL
+		        + "/matched/" ) ) );
+		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL
+		        + "/not-matched/" ) ) );
 	}
 }

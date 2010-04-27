@@ -20,8 +20,12 @@
 			<element name="response" type="tns:Response" maxOccurs="1"
 				minOccurs="0">
 			</element>
+			<!-- Need to have at least one of match/not-match -->
 			<element name="match" type="tns:Match" maxOccurs="unbounded"
-				minOccurs="1">
+				minOccurs="0">
+			</element>
+			<element name="not-match" type="tns:Match" maxOccurs="unbounded"
+				minOccurs="0">
 			</element>
 			<element name="filter" type="tns:Filter"
 				maxOccurs="unbounded" minOccurs="0">

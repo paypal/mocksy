@@ -41,6 +41,7 @@ abstract public class Matcher {
 	private static final Logger logger = Logger.getLogger( Matcher.class
 	        .getName() );
 	private Pattern pattern;
+	private boolean negative;
 
 	/**
 	 * Returns the RegEx pattern used to perform the match.
@@ -61,15 +62,38 @@ abstract public class Matcher {
 	}
 
 	/**
+	 * Sets whether or not this Matcher should negate it's normal
+	 * evaluation.  If this flag is set to true, then the {@link Matcher#matches(Request)}
+	 * method should return the exact opposite value that it would
+	 * if this flag were set to false.
+	 * 
+	 * @param isNegative boolean flag for whether or to negate the evaluation
+	 */
+	public void setNegative(boolean isNegative) {
+		this.negative = isNegative;
+	}
+
+	/**
 	 * Main method that defines the responsibilities of a Matcher, namely
 	 * to determine whether or not a particular Request meets the criteria
 	 * established by this Matcher.
 	 * 
+	 * Implementations must reference the {@link #isNegative()} method to
+	 * determine whether or not the return value should be negated.
+	 * 
 	 * @param request
 	 * @return
-	 * @throws Exception
 	 */
-	abstract public boolean matches(Request request) throws Exception;
+	abstract public boolean matches(Request request);
+
+	/**
+	 * Returns whether or not this Matcher should negate its evaluation.
+	 * 
+	 *  @return whether or not to negate the {@link #matches(Request)} evaluation
+	 */
+	protected boolean isNegative() {
+		return this.negative;
+	}
 
 	/**
 	 * Helper method for subtypes that determines whether any of the
