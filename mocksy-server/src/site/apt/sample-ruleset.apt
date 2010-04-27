@@ -18,12 +18,23 @@ features:
 		</filter>
 	</rule>
 
-	<rule id="xpath-matcher" response="xml/categories.xml">
+	<rule id="xpath-matcher" file="xml/categories.xml">
 		<match header="Content-Type">text/xml</match>
 		<match xpath="//inventory/category/@id">\d+</match>
 		<filter class="org.mocksy.filter.XslFilter">
 			<stylesheet>html.xslt</stylesheet>
 		</filter>
+	</rule>
+	
+	<rule id="error-matcher">
+		<not-match header="Host">localhost</not-match>
+		<response class="org.mocksy.server.http.HttpResponse"
+				  source="not-allowed.html">
+			<options>
+				<delay>100</delay>
+				<statusCode>400</statusCode>
+			</options>
+		</response>
 	</rule>
 
 	<default-rule proxy-rule="http://mocksy.org/" />
