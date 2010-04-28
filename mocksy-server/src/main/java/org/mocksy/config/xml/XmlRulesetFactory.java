@@ -172,10 +172,11 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		NodeList matcherNodes = ruleNode.getElementsByTagName( MATCH_TAG );
 		NodeList notMatcherNodes = ruleNode
 		        .getElementsByTagName( NOT_MATCH_TAG );
-		if ( matcherNodes.getLength() + notMatcherNodes.getLength() <= 0 ) {
-			throw new IOException( "At least one <" + MATCH_TAG + "> or <"
-			        + NOT_MATCH_TAG + "> tag must be defined" );
-		}
+		// This doesn't work
+		// if ( matcherNodes.getLength() + notMatcherNodes.getLength() <= 0 ) {
+		// throw new IOException( "At least one <" + MATCH_TAG + "> or <"
+		// + NOT_MATCH_TAG + "> tag must be defined" );
+		// }
 		for ( int j = 0; j < matcherNodes.getLength(); j++ ) {
 			Element elem = (Element) matcherNodes.item( j );
 			Matcher matcher = getMatcher( elem );
