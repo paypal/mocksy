@@ -144,4 +144,15 @@ public class MatcherTest {
 		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL
 		        + "/not-matched/" ) ) );
 	}
+
+	@Test
+	public void testNullValue() throws Exception {
+		HttpMatcher matcher = new HttpMatcher();
+		matcher.setPattern( Pattern.compile( "^$" ) );
+		matcher.setParam( "none" );
+
+		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL + "/" ) ) );
+		matcher.setNegative( true );
+		assertFalse( matcher.matches( new MockHttpRequest( "/" ) ) );
+	}
 }
