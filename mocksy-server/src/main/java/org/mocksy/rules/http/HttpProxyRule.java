@@ -1,4 +1,4 @@
-package org.mocksy.rules;
+package org.mocksy.rules.http;
 
 /*
  * Copyright 2009, PayPal
@@ -31,6 +31,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.mocksy.Request;
 import org.mocksy.Response;
+import org.mocksy.rules.Matcher;
+import org.mocksy.rules.Rule;
 import org.mocksy.server.http.HttpRequest;
 import org.mocksy.server.http.HttpResponse;
 

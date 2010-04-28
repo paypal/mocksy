@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mocksy.Request;
 import org.mocksy.Response;
 import org.mocksy.rules.http.HttpMatcher;
+import org.mocksy.rules.http.HttpProxyRule;
 import org.mocksy.server.http.HttpResponse;
 import org.mocksy.server.http.MockHttpRequest;
 import org.mocksy.server.http.MocksyServer;
