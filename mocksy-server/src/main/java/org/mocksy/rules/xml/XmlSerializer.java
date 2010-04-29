@@ -159,7 +159,7 @@ public class XmlSerializer {
 				Element filterNode = rulesDoc.createElement( "filter" );
 				filterNode.setAttribute( "class", filter.getClass().getName() );
 				element.appendChild( filterNode );
-				// TODO need to render the filter properties
+
 				Map<String, String> properties = filter.getProperties();
 				for ( String propName : properties.keySet() ) {
 					Element propNode = rulesDoc.createElement( propName );
