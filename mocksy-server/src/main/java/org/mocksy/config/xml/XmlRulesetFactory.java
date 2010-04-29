@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.mocksy.Response;
+import org.mocksy.config.RulesetFactoryFactory;
 import org.mocksy.config.UpdateableRulesetFactory;
 import org.mocksy.filter.ResponseFilter;
 import org.mocksy.rules.Matcher;
@@ -49,8 +50,6 @@ import org.w3c.dom.NodeList;
  * 
  * @author Saleem Shafi
  */
-// TODO allow RulesetFactory class in CLI
-// TODO allow RulesetFactory class in RulesetRules
 public class XmlRulesetFactory implements UpdateableRulesetFactory {
 	private static final String FILTER_TAG = "filter";
 	private static final String XPATH_ATTRIB = "xpath";
@@ -193,9 +192,8 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 
 	private RulesetRule getRulesetRule(Element ruleNode) throws Exception {
 		String rulesetName = getRequiredAttribute( ruleNode, RULESET_ATTRIB );
-		XmlSource subSource = (XmlSource) this.source
-		        .getRelativeSource( rulesetName );
-		Ruleset subRuleset = new XmlRulesetFactory( subSource ).getRuleset();
+		Ruleset subRuleset = RulesetFactoryFactory.getRulesetFactory(
+		        rulesetName, this.source ).getRuleset();
 		return new RulesetRule( subRuleset );
 	}
 

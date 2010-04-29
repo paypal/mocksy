@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.mocksy.config.xml.FileXmlSource;
 import org.mocksy.config.xml.XmlRulesetFactory;
+import org.mocksy.config.xml.XmlSource;
 
 /*
  * Copyright 2009, PayPal
@@ -51,23 +52,7 @@ public final class RulesetFactoryFactory {
 	        throws Exception
 	{
 		try {
-			Class<?> factoryClass = Class.forName( rulesetFactory );
-			if ( !RulesetFactory.class.isAssignableFrom( factoryClass ) ) {
-				throw new IllegalArgumentException( rulesetFactory
-				        + " needs to be a " + RulesetFactory.class.getName() );
-			}
-
-			try {
-				return (RulesetFactory) factoryClass.newInstance();
-			}
-			catch ( InstantiationException e ) {
-				throw new IllegalArgumentException(
-				        "Error creating instance of " + rulesetFactory, e );
-			}
-			catch ( IllegalAccessException e ) {
-				throw new IllegalArgumentException(
-				        "Error creating instance of " + rulesetFactory, e );
-			}
+			return getClassBasedFactory( rulesetFactory );
 		}
 		catch ( ClassNotFoundException e ) {
 			// in this case, we probably didn't get a classname
@@ -84,5 +69,44 @@ public final class RulesetFactoryFactory {
 
 		return new XmlRulesetFactory( new FileXmlSource( new File(
 		        rulesetFactory ) ) );
+	}
+
+	public static RulesetFactory getRulesetFactory(String rulesetFactory,
+	        Source baseSource) throws Exception
+	{
+		try {
+			return getClassBasedFactory( rulesetFactory );
+		}
+		catch ( ClassNotFoundException e ) {
+			// in this case, we probably didn't get a classname
+			// don't worry, we'll just move on and assume this
+			// is either a filename or URL
+		}
+
+		XmlSource subSource = (XmlSource) baseSource
+		        .getRelativeSource( rulesetFactory );
+		return new XmlRulesetFactory( subSource );
+	}
+
+	private static RulesetFactory getClassBasedFactory(String rulesetFactory)
+	        throws ClassNotFoundException
+	{
+		Class<?> factoryClass = Class.forName( rulesetFactory );
+		if ( !RulesetFactory.class.isAssignableFrom( factoryClass ) ) {
+			throw new IllegalArgumentException( rulesetFactory
+			        + " needs to be a " + RulesetFactory.class.getName() );
+		}
+
+		try {
+			return (RulesetFactory) factoryClass.newInstance();
+		}
+		catch ( InstantiationException e ) {
+			throw new IllegalArgumentException( "Error creating instance of "
+			        + rulesetFactory, e );
+		}
+		catch ( IllegalAccessException e ) {
+			throw new IllegalArgumentException( "Error creating instance of "
+			        + rulesetFactory, e );
+		}
 	}
 }
