@@ -29,7 +29,7 @@
 	<distributionManagement>
 		<site>
 			<id>website</id>
-			<url>scp://mocksy.org/</url>
+			<url>scp://mocksy.org/www/</url>
 		</site>
 	</distributionManagement>
 
