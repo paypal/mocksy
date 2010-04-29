@@ -5,7 +5,7 @@ and respond based on your Mocksy rulesets.  Simply run the executable
 jar, mocksy-server, like so:
 
 +--------------------------------------------------
-	java -jar mocksy-server.jar --help
+	java -jar mocksy-server-full.jar --help
 +--------------------------------------------------
     
   and the following usage information will be displayed:

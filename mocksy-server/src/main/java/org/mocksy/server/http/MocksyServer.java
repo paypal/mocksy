@@ -246,7 +246,8 @@ public class MocksyServer {
 		}
 		if ( help ) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp( "java -jar mocksy-server.jar", options, true );
+			formatter.printHelp( "java -jar mocksy-server-full.jar", options,
+			        true );
 			System.exit( 0 );
 		}
 		return line;
