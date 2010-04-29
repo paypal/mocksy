@@ -4,7 +4,7 @@
 	<groupId>org.mocksy</groupId>
 	<artifactId>mocksy-server</artifactId>
 	<name>Mocksy Server</name>
-	<version>0.8-SNAPSHOT</version>
+	<version>0.8</version>
 	<description>Mocksy Server</description>
 	<scm>
 		<developerConnection>git://github.com/saleemshafi/mocksy.git

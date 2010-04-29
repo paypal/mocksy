@@ -11,8 +11,10 @@
     </menu>
     <menu name="Download">
     	<item name="Latest Version (0.8)" href="download/latest.html"/>
+    	<!-- 
     	<item name="Rulesets" href="rulesets/index.html"/>
     	<item name="Archives" href="download/archives.html"/>
+    	 -->
     </menu>
 	<menu ref="reports"/>
   </body>

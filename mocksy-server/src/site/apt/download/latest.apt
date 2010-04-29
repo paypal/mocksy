@@ -4,7 +4,7 @@ Download the latest version
   
   You can download the artifacts here:
 
-    * Executable Jar: {{http://www.mocksy.org/repo/org/mocksy/mocksy-server/0.8/mocksy-server-0.8.jar}}
+    * Executable Jar: {{http://www.mocksy.org/repo/org/mocksy/mocksy-server/0.8/mocksy-server-0.8-full.jar}}
 
     * Sources: {{http://www.mocksy.org/repo/org/mocksy/mocksy-server/0.8/mocksy-server-0.8-sources.jar}}
     
@@ -17,3 +17,14 @@ Download the latest version
 		<version>0.8</version>
 	</dependency>
 ------------------------------------------------------------
+
+What's Next?
+
+  Here are some of the things planned for the next release:
+
+    * Add mutual auth support for SSL connections in HttpProxyRule
+    
+    * Clean up the exceptions
+    
+    * Add schema validation for XML rulesets on startup
+    
