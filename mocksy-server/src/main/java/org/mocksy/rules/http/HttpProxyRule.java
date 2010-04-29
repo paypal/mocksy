@@ -16,6 +16,7 @@ package org.mocksy.rules.http;
  *  limitations under the License.
  */
 
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,12 +24,15 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.Header;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.mocksy.Request;
 import org.mocksy.Response;
 import org.mocksy.rules.Matcher;
@@ -71,20 +75,20 @@ public class HttpProxyRule implements Rule {
 			        "ProxyRule only works for HttpRequests" );
 		}
 		HttpRequest httpRequest = (HttpRequest) request;
-		HttpClient httpClient = new HttpClient();
-		HttpMethod method = this.getProxyMethod( httpRequest
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpRequestBase method = this.getProxyMethod( httpRequest
 		        .getServletRequest() );
 		// httpRequest.getServletRequest();
 		HttpResponse response = null;
 		try {
-			int responseCode = httpClient.executeMethod( method );
+			org.apache.http.HttpResponse httpResp = httpClient.execute( method );
 
-			response = new HttpResponse( "proxied response", method
-			        .getResponseBodyAsStream() );
-			response.setStatusCode( responseCode );
+			response = new HttpResponse( "proxied response", httpResp
+			        .getEntity().getContent() );
+			response.setStatusCode( httpResp.getStatusLine().getStatusCode() );
 
 			// Pass response headers back to the client
-			Header[] headerArrayResponse = method.getResponseHeaders();
+			Header[] headerArrayResponse = httpResp.getAllHeaders();
 			for ( Header header : headerArrayResponse ) {
 				response.setHeader( header.getName(), header.getValue() );
 			}
@@ -102,43 +106,51 @@ public class HttpProxyRule implements Rule {
 		return this.matchers;
 	}
 
-	protected HttpMethod getProxyMethod(HttpServletRequest request) {
+	protected HttpRequestBase getProxyMethod(HttpServletRequest request) {
 		String proxyUrl = this.proxyUrl;
 		proxyUrl += request.getPathInfo();
 		if ( request.getQueryString() != null ) {
 			proxyUrl += "?" + request.getQueryString();
 		}
-		HttpMethod method = null;
+		HttpRequestBase method = null;
 		if ( "GET".equals( request.getMethod() ) ) {
-			method = new GetMethod( proxyUrl );
-			method.setFollowRedirects( true );
-			method.setRequestHeader( "Cache-Control", "no-cache" );
-			method.setRequestHeader( "Pragma", "no-cache" );
+			method = new HttpGet( proxyUrl );
+			method.addHeader( "Cache-Control", "no-cache" );
+			method.addHeader( "Pragma", "no-cache" );
 		}
 		else if ( "POST".equals( request.getMethod() ) ) {
-			method = new PostMethod( proxyUrl );
+			method = new HttpPost( proxyUrl );
 
 			Map<String, String[]> paramMap = request.getParameterMap();
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			for ( String paramName : paramMap.keySet() ) {
 				String[] values = paramMap.get( paramName );
 				for ( String value : values ) {
-					NameValuePair param = new NameValuePair( paramName, value );
+					NameValuePair param = new BasicNameValuePair( paramName,
+					        value );
 					params.add( param );
 				}
 			}
-			( (PostMethod) method ).setRequestBody( params
-			        .toArray( new NameValuePair[] {} ) );
+
+			try {
+				( (HttpPost) method ).setEntity( new UrlEncodedFormEntity(
+				        params ) );
+			}
+			catch ( UnsupportedEncodingException e ) {
+				// don't worry, this won't happen
+			}
 		}
 
 		Enumeration headers = request.getHeaderNames();
 		while ( headers.hasMoreElements() ) {
 			String header = (String) headers.nextElement();
-			if ( "If-Modified-Since".equals( header ) ) continue;
+			if ( "If-Modified-Since".equals( header )
+			        || "Content-Length".equals( header )
+			        || "Transfer-Encoding".equals( header ) ) continue;
 			Enumeration values = request.getHeaders( header );
 			while ( values.hasMoreElements() ) {
 				String value = (String) values.nextElement();
-				method.setRequestHeader( new Header( header, value ) );
+				method.addHeader( header, value );
 			}
 		}
 
