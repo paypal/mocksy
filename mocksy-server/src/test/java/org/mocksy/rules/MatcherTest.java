@@ -148,11 +148,12 @@ public class MatcherTest {
 	@Test
 	public void testNullValue() throws Exception {
 		HttpMatcher matcher = new HttpMatcher();
-		matcher.setPattern( Pattern.compile( "^$" ) );
+		matcher.setPattern( Pattern.compile( "^.*$" ) );
 		matcher.setParam( "none" );
 
-		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL + "/" ) ) );
 		matcher.setNegative( true );
-		assertFalse( matcher.matches( new MockHttpRequest( "/" ) ) );
+		assertTrue( matcher.matches( new MockHttpRequest( BASE_URL + "/" ) ) );
+		matcher.setNegative( false );
+		assertFalse( matcher.matches( new MockHttpRequest( BASE_URL + "/" ) ) );
 	}
 }
