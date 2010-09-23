@@ -28,8 +28,8 @@ features:
 	
 	<rule id="error-matcher">
 		<not-match header="Host">localhost</not-match>
-		<response class="org.mocksy.server.http.HttpResponse"
-				  source="not-allowed.html">
+		<response class="org.mocksy.server.http.HttpResponse">
+			<source>not-allowed.html</source>
 			<options>
 				<delay>100</delay>
 				<statusCode>400</statusCode>
@@ -37,6 +37,6 @@ features:
 		</response>
 	</rule>
 
-	<default-rule proxy-rule="http://mocksy.org/" />
-</ruleset>
+	<default-rule proxy-url="http://mocksy.org/" />
+</rules>
 +----------------------------------------------------
