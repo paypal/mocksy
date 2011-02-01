@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Mocksy Server - </title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Mocksy Server
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2011-01-31
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documentation</h5>
+            <ul>
+              
+    <li class="none">
+              <strong>Guide</strong>
+        </li>
+              
+    <li class="none">
+                    <a href="server.html">Running the Server</a>
+          </li>
+              
+    <li class="none">
+                    <a href="apidocs/index.html">Javadocs</a>
+          </li>
+              
+    <li class="none">
+                    <a href="sample-ruleset.html">Example Ruleset</a>
+          </li>
+          </ul>
+              <h5>Download</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="download/latest.html">Latest Version (0.8)</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Mocksy User Guide</h2>
+<div class="section"><h3>Overview</h3>
+<p>The primary abstractions in Mocksy are a request and response. A request is received and it is mapped to a response that is returned back to the client. In this way, it acts exactly like a normal service would, except without all the pesky business logic, data access, etc.</p>
+<p>This mapping is accomplished with a set of rules, which can be grouped into rulesets. Only one rule is triggered for each request, and the corresponding response is returned to the client. The rule is triggered by being the first one in the list with a &quot;matcher&quot; that matches the request.</p>
+<p>A matcher could match a request either by the URI, query parameters, or with a match on the body, either with a regular expression or XPath, if the data happens to be in XML.</p>
+</div>
+<div class="section"><h3>Configuration</h3>
+<div class="section"><h4>Code vs. XML</h4>
+<p>Mocksy was built with the principles of Inversion of Control in mind, so you can configure rules, etc. in code by wiring the objects together yourself. While this can be useful, it is often more convenient to configure things with XML files, so there's a built-in facility for that, as well.</p>
+</div>
+<div class="section"><h4>File vs. URL</h4>
+<p>When you use the XML configuration option, you can reference files on your local filesystem, or remote files via a URL. With the URL option, you can manage a set of rules that represent a service and share them others. This keeps your clients from having to know too much about your service or about Mocksy.</p>
+</div>
+</div>
+<div class="section"><h3>Supported Matchers</h3>
+<div class="section"><h4>Matching HTTP</h4>
+<p>For standard HTTP requests, you can match against header values, POST parameters or the full URL string, itself. Here's an example of each using XML configuration:</p>
+<ul><li>Headers<div class="source"><pre>         &lt;rule id=&quot;header_match&quot; file=&quot;...&quot;&gt;
+            &lt;match header=&quot;Referer&quot;&gt;http://www.mocksy.org/&lt;/match&gt;
+         &lt;/rule&gt;  </pre>
+</div>
+</li>
+<li>POST Parameters<div class="source"><pre>         &lt;rule id=&quot;param_match&quot; file=&quot;...&quot;&gt;
+            &lt;match param=&quot;username&quot;&gt;testuser&lt;/match&gt;
+         &lt;/rule&gt;  </pre>
+</div>
+</li>
+<li>Full URL<div class="source"><pre>         &lt;rule id=&quot;url_match&quot; file=&quot;...&quot;&gt;
+            &lt;match&gt;/test/.*&lt;/match&gt;
+         &lt;/rule&gt;  </pre>
+</div>
+</li>
+</ul>
+</div>
+<div class="section"><h4>Matching XML</h4>
+<p>If the body of your request is XML, e.g. SOAP, you can also match the body using an XPath query, e.g.:</p>
+<div class="source"><pre>         &lt;rule id=&quot;xml_match&quot; file=&quot;...&quot;&gt;
+            &lt;match xpath=&quot;//envelope/body/query&quot;&gt;mock server&lt;/match&gt;
+         &lt;/rule&gt;</pre>
+</div>
+</div>
+</div>
+<div class="section"><h3>Filters</h3>
+<p>In addition to specifying the file containing the contents of the response, each rule can also define one or more filters that augment the response. For example, there's an XmlResponseFilter that allows you to specify a stylesheet to apply to the XML response. There's also a PropertyFilter that interpolates Ant-style property tags.</p>
+<p>You can define filters as part of your rules, e.g.:</p>
+<div class="source"><pre>        &lt;rule id=&quot;html_response&quot; file=&quot;data.xml&quot;&gt;
+                &lt;filter class=&quot;org.mocksy.filter.XslFilter&gt;
+                        &lt;stylesheet&gt;html.xslt&lt;/stylesheet&gt;
+                &lt;/filter&gt;
+        &lt;/rule&gt;</pre>
+</div>
+<p>You can also create your own custom filters, as long as they implement the org.mocksy.filter.ResponseFilter interface.</p>
+</div>
+<div class="section"><h3>Admin</h3>
+<p>If you start the admin port (using the -a switch when running the server), you will get access to two important pieces of information remotely: a description of the rules, and a copy of the server logs.</p>
+<div class="section"><h4>Rules page</h4>
+<p>By requesting the /rules URI on the Mocksy server, e.g. http://localhost:8081/rules, you'll get an XML representation of all of the rules that are processing requests on the main port. This is very useful for debugging, as well as for communicating with remote teams what options they have in their testing.</p>
+</div>
+<div class="section"><h4>Logging page</h4>
+<p>The /logs URI, e.g. http://localhost:8081/logs, should provide access to the logs directory that holds all of the server log files. This is very helpful for debugging, especially when you're trying to figure out why you're not getting the response you thought you should get for the request you're making. The logs should show you exactly which rule is being triggered and which of the matchers on previous rules failed.</p>
+</div>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2011
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
