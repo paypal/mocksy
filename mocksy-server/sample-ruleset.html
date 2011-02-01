@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Mocksy Server - </title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                    <span id="bannerLeft">
+    
+            Mocksy Server
+    
+            </span>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+            <div class="xleft">
+        Last Published: 2011-01-31
+                      </div>
+            <div class="xright">      
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Documentation</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="guide.html">Guide</a>
+          </li>
+              
+    <li class="none">
+                    <a href="server.html">Running the Server</a>
+          </li>
+              
+    <li class="none">
+                    <a href="apidocs/index.html">Javadocs</a>
+          </li>
+              
+    <li class="none">
+              <strong>Example Ruleset</strong>
+        </li>
+          </ul>
+              <h5>Download</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="download/latest.html">Latest Version (0.8)</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                                           <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+                       
+  
+
+  
+    
+  
+  
+    
+        </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Sample Ruleset</h2>
+<p>The following is an example ruleset that demonstrates all of the main features:</p>
+<div class="source"><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;rules xmlns=&quot;http://mocksy.org/RULESET/1.0.0&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd&quot;&gt;
+
+        &lt;rule id=&quot;http-matchers&quot; ruleset=&quot;rest/rest-rules.xml&quot;&gt;
+                &lt;match header=&quot;Accept&quot;&gt;application/x-www-form-urlencoded&lt;/match&gt;
+                &lt;match param=&quot;username&quot;&gt;new_user&lt;/match&gt;
+                &lt;match&gt;/account/.*/&lt;/match&gt;
+                &lt;filter class=&quot;org.mocksy.filter.PropertyFilter&quot;&gt;
+                        &lt;version&gt;1.4&lt;/version&gt;
+                &lt;/filter&gt;
+        &lt;/rule&gt;
+
+        &lt;rule id=&quot;xpath-matcher&quot; file=&quot;xml/categories.xml&quot;&gt;
+                &lt;match header=&quot;Content-Type&quot;&gt;text/xml&lt;/match&gt;
+                &lt;match xpath=&quot;//inventory/category/@id&quot;&gt;\d+&lt;/match&gt;
+                &lt;filter class=&quot;org.mocksy.filter.XslFilter&quot;&gt;
+                        &lt;stylesheet&gt;html.xslt&lt;/stylesheet&gt;
+                &lt;/filter&gt;
+        &lt;/rule&gt;
+        
+        &lt;rule id=&quot;error-matcher&quot;&gt;
+                &lt;not-match header=&quot;Host&quot;&gt;localhost&lt;/not-match&gt;
+                &lt;response class=&quot;org.mocksy.server.http.HttpResponse&quot;&gt;
+                        &lt;source&gt;not-allowed.html&lt;/source&gt;
+                        &lt;options&gt;
+                                &lt;delay&gt;100&lt;/delay&gt;
+                                &lt;statusCode&gt;400&lt;/statusCode&gt;
+                        &lt;/options&gt;
+                &lt;/response&gt;
+        &lt;/rule&gt;
+
+        &lt;default-rule proxy-url=&quot;http://mocksy.org/&quot; /&gt;
+&lt;/rules&gt;</pre>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">&#169;  
+          2011
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+  </body>
+</html>
