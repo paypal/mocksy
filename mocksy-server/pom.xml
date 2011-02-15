@@ -4,7 +4,7 @@
 	<groupId>org.mocksy</groupId>
 	<artifactId>mocksy-server</artifactId>
 	<name>Mocksy Server</name>
-	<version>0.8</version>
+	<version>0.9-SNAPSHOT</version>
 	<description>Mocksy Server</description>
 	<scm>
 		<developerConnection>git://github.com/saleemshafi/mocksy.git
@@ -63,7 +63,12 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-	</dependencies>
+	  <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.8.2</version>
+    </dependency>
+  </dependencies>
 
 	<build>
 		<plugins>
@@ -116,3 +121,4 @@
 	</build>
 
 </project>
+

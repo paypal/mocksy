@@ -54,6 +54,15 @@ public class HttpResponse extends Response {
 		return this.headers.get( name );
 	}
 
+	public void setHeader(String headerString) {
+		if (headerString == null) throw new IllegalArgumentException("setHeader(String) parameter cannot be null");
+		int colon = headerString.indexOf( ':' );
+		if (colon == -1) throw new IllegalArgumentException("setHeader(String) must contain a ':' character, or use the setHeader(String, String) variant.");
+		String headerName = headerString.substring( 0, colon ).trim();
+		String headerValue = headerString.substring( colon+1 ).trim();
+		this.setHeader(headerName, headerValue);
+	}
+	
 	public void setHeader(String name, String value) {
 		if ( "Content-Type".equals( name ) ) {
 			this.setContentType( value );

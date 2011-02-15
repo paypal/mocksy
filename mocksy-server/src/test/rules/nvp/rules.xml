@@ -6,6 +6,19 @@
 	<rule id="success" file="success.nvp">
 		<match param="message">success</match>
 	</rule>
+	
+	<rule id="error-matcher">
+		<not-match header="Host">localhost</not-match>
+		<response class="org.mocksy.server.http.HttpResponse">
+			<source>error.nvp</source>
+			<options>
+				<delay>100</delay>
+				<statusCode>400</statusCode>
+				<header>Content-Location: somewhere/else</header>
+			</options>
+		</response>
+	</rule>
+	
 
 	<default-rule file="error.nvp"/>
 </rules>

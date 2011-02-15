@@ -20,13 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.apache.commons.beanutils.BeanUtils;
 import org.mocksy.Response;
 import org.mocksy.config.RulesetFactoryFactory;
 import org.mocksy.config.UpdateableRulesetFactory;
@@ -244,7 +244,9 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 				NodeList optionNodes = optionsNode.getChildNodes();
 				for ( int i = 0; i < optionNodes.getLength(); i++ ) {
 					Node option = optionNodes.item( i );
-					options.put( option.getNodeName(), option.getTextContent() );
+					if (option.getNodeType() == Node.ELEMENT_NODE) {
+						options.put( option.getNodeName(), option.getTextContent() );
+					}
 				}
 			}
 		}
@@ -260,7 +262,7 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 
 		String contentType = getAttribute( ruleNode, CONTENT_TYPE_ATTRIB );
 		if ( contentType == null ) {
-			contentType = figureOutContentType( fileName );
+			contentType = figureOutContentType( responseURL.getPath() );
 		}
 		response.setContentType( contentType );
 
@@ -297,9 +299,10 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		try {
 			for ( String key : options.keySet() ) {
 				String value = options.get( key );
-				Field field = response.getClass().getDeclaredField( key );
-				field.setAccessible( true );
-				field.set( response, value );
+				BeanUtils.setProperty( response, key, value );
+//				Field field = response.getClass().getField( key );
+//				field.setAccessible( true );
+//				field.set( response, value );
 			}
 		}
 		catch ( Exception e ) {

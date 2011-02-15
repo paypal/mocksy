@@ -11,7 +11,7 @@
     	<match>/nvp/.*</match>
     </rule>
     
-	<default-rule proxy-host="google.com" />
+	<default-rule proxy-url="google.com" />
 
 <!-- <rule id="json" ruleset="json/rules.xml">
 		<match pattern="/json/.*" />

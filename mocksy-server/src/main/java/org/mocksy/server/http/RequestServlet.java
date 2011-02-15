@@ -137,6 +137,12 @@ public class RequestServlet extends HttpServlet {
 		boolean isError = false;
 		if ( matchResponse instanceof HttpResponse ) {
 			HttpResponse httpResponse = (HttpResponse) matchResponse;
+
+			for ( String headerName : httpResponse.getHeaderNames() ) {
+				String headerValue = httpResponse.getHeader( headerName );
+				resp.addHeader( headerName, headerValue );
+			}
+			
 			int statusCode = httpResponse.getStatusCode();
 			if ( statusCode < 400 ) {
 				resp.setStatus( statusCode );
@@ -144,11 +150,6 @@ public class RequestServlet extends HttpServlet {
 			else {
 				resp.sendError( statusCode );
 				isError = true;
-			}
-
-			for ( String headerName : httpResponse.getHeaderNames() ) {
-				String headerValue = httpResponse.getHeader( headerName );
-				resp.addHeader( headerName, headerValue );
 			}
 		}
 		else {
