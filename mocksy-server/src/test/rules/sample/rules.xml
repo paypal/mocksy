@@ -21,7 +21,7 @@
 	</rule>
 	
 	<rule id="error-matcher">
-		<not-match header="Host">localhost</not-match>
+		<not-match header="Host">localhost.*</not-match>
 		<response class="org.mocksy.server.http.HttpResponse">
 			<source>not-allowed.html</source>
 			<options>
@@ -32,5 +32,5 @@
 		</response>
 	</rule>
 
-	<default-rule proxy-url="http://mocksy.org/" />
+	<default-rule proxy-url="http://mocksy.org" />
 </rules>

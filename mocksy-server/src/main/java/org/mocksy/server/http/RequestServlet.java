@@ -137,12 +137,6 @@ public class RequestServlet extends HttpServlet {
 		boolean isError = false;
 		if ( matchResponse instanceof HttpResponse ) {
 			HttpResponse httpResponse = (HttpResponse) matchResponse;
-
-			for ( String headerName : httpResponse.getHeaderNames() ) {
-				String headerValue = httpResponse.getHeader( headerName );
-				resp.addHeader( headerName, headerValue );
-			}
-			
 			int statusCode = httpResponse.getStatusCode();
 			if ( statusCode < 400 ) {
 				resp.setStatus( statusCode );
@@ -150,6 +144,15 @@ public class RequestServlet extends HttpServlet {
 			else {
 				resp.sendError( statusCode );
 				isError = true;
+			}
+
+			for ( String headerName : httpResponse.getHeaderNames() ) {
+				// need to skip the Content-Encoding header on errors since this
+				// server will send it's own error content and it might not be 
+				// encoded the same way, e.g. gzip
+				if (isError && "Content-Encoding".equals(headerName)) continue;
+				String headerValue = httpResponse.getHeader( headerName );
+				resp.addHeader( headerName, headerValue );
 			}
 		}
 		else {
