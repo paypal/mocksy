@@ -31,6 +31,9 @@ import org.mocksy.Request;
 import org.mocksy.rules.Matcher;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Matcher that can grab portions of an XML document using XPath.
@@ -40,6 +43,7 @@ import org.w3c.dom.NodeList;
 public class XmlMatcher extends Matcher {
 	private static final Logger logger = Logger.getLogger( XmlMatcher.class
 	        .getName() );
+	private static final ErrorHandler customLoggingErrorHandler = new CustomLoggingErrorHandler(logger);
 	private static final Map<Request, Document> documentCache = new WeakHashMap<Request, Document>();
 	private String xpath;
 
@@ -57,18 +61,20 @@ public class XmlMatcher extends Matcher {
 		// Look up all values for the given xpath. If none, then no match.
 		Document document = getDocument( request );
 		String[] values = null;
-		String xpath = this.xpath;
 		// this will be null if the request wasn't XML
-		if ( document != null ) {
-			try {
-				// find the values matching the XPath query
-				values = getValues( document, xpath, true );
-			}
-			catch ( XPathExpressionException e ) {
-				// trap the exception for when the XPath is invalid, just log it
-				logger.log( Level.SEVERE, "Invalid XPath expression: " + xpath,
-				        e );
-			}
+		if ( document == null ) {
+			// and don't even consider not-matches in this case
+			return false;
+		}
+		String xpath = this.xpath;
+		try {
+			// find the values matching the XPath query
+			values = getValues( document, xpath, true );
+		}
+		catch ( XPathExpressionException e ) {
+			// trap the exception for when the XPath is invalid, just log it
+			logger.log( Level.SEVERE, "Invalid XPath expression: " + xpath,
+			        e );
 		}
 		// there are no query matches, just bail out now
 		if ( values == null || values.length == 0 ) {
@@ -140,18 +146,48 @@ public class XmlMatcher extends Matcher {
 					// get the XML from the request
 					DocumentBuilder builder = domFactory.newDocumentBuilder();
 					InputStream stream = request.getData();
+					builder.setErrorHandler( customLoggingErrorHandler );
 					// cache it because we can't guarantee that the Request's
 					// InputStream is re-readable
 					documentCache.put( request, builder.parse( stream ) );
 				}
 				catch ( Exception e ) {
 					// If this isn't XML, just log it and move on
-					logger.log( Level.WARNING,
-					        "Trying to process a non-XML request as XML.", e );
+					logger.log( Level.FINER,
+					        "Skipping matcher because content is not XML.  If this is unexpected, turn the logging down and see the stacktrace.");
 					documentCache.put( request, null );
 				}
 			}
 		}
 		return documentCache.get( request );
+	}
+	
+	static class CustomLoggingErrorHandler implements ErrorHandler {
+		private Logger errorLogger;
+		
+		CustomLoggingErrorHandler(Logger logger) {
+			this.errorLogger = logger;
+        }
+		
+		@Override
+        public void error(SAXParseException e)
+                throws SAXException
+        {
+			this.errorLogger.log( Level.FINEST, "Request content could not be processed as XML", e );
+        }
+
+		@Override
+        public void fatalError(SAXParseException e)
+                throws SAXException
+        {
+			this.errorLogger.log( Level.FINEST, "Request content could not be processed as XML", e );
+        }
+
+		@Override
+        public void warning(SAXParseException e)
+                throws SAXException
+        {
+			this.errorLogger.log( Level.FINEST, "Request content could not be processed as XML", e );
+        }		
 	}
 }
