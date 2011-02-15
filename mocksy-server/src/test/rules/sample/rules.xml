@@ -27,6 +27,7 @@
 			<options>
 				<delay>100</delay>
 				<statusCode>400</statusCode>
+				<header>Server: Mocksy v0.9</header>
 			</options>
 		</response>
 	</rule>
