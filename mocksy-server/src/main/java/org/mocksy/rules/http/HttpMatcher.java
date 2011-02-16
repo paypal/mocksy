@@ -18,6 +18,7 @@ package org.mocksy.rules.http;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.mocksy.Request;
 import org.mocksy.rules.Matcher;
 import org.mocksy.server.http.HttpRequest;
@@ -33,6 +34,7 @@ public class HttpMatcher extends Matcher {
 	        .getName() );
 	private String header;
 	private String param;
+	private String method;
 
 	/**
 	 * Sets the HTTP header name to match against.
@@ -70,6 +72,27 @@ public class HttpMatcher extends Matcher {
 		return this.param;
 	}
 
+	/**
+	 * Returns the HTTP method that the associate rule will trigger for
+	 * 
+	 * @return the HTTP method to match against
+	 */
+	public String getMethod() {
+		return this.method;
+	}
+
+	/**
+	 * Sets the HTTP method to match against.  See http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+	 * 
+	 * This will also set the 'pattern' since that is the property used for match evaluations.
+	 * 
+	 * @param method the HTTP method (GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, CONNECT) to match against 
+	 */
+	public void setMethod(String method) {
+		this.method = method;
+		this.setPattern( method == null ? null : Pattern.compile( method ) );
+	}
+	
 	@Override
 	public boolean matches(Request request) {
 		// We can only match against HttpRequests
@@ -100,6 +123,16 @@ public class HttpMatcher extends Matcher {
 				                + "'" );
 			}
 		}
+		else if ( this.method != null ) {
+			String actualMethod = httpRequest.getServletRequest().getMethod();
+			values = new String[] { actualMethod };
+			if ( logger.isLoggable( Level.FINEST ) ) {
+				logger.log( Level.FINEST,
+				        "Attempting HTTP method match.  Method is '"
+				                + actualMethod + "' and checking for '"
+				                + this.method + "'" );
+			}
+		}
 		else {
 			// Full URI match
 			String fullUrl = httpRequest.getFullURL();
@@ -124,6 +157,9 @@ public class HttpMatcher extends Matcher {
 		else if ( this.param != null ) {
 			return "HTTP Param matcher, parameter " + this.param + ", pattern "
 			        + this.getPattern();
+		}
+		else if ( this.method != null ) {
+			return "HTTP Method matcher, method " + this.method;
 		}
 		else {
 			return "HTTP Query matcher, pattern " + this.getPattern();

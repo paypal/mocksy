@@ -3,15 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
 
-	<rule id="http-matchers" ruleset="rest/rest-rules.xml">
-		<match header="Accept">application/x-www-form-urlencoded</match>
-		<match param="username">new_user</match>
-		<match>/account/.*/</match>
-		<filter class="org.mocksy.filter.PropertyFilter">
-			<version>1.4</version>
-		</filter>
-	</rule>
-
 	<rule id="xpath-matcher" file="xml/categories.xml">
 		<match header="Content-Type">text/xml</match>
 		<match xpath="//inventory/category/@id">\d+</match>
@@ -30,6 +21,10 @@
 				<header>Server: Mocksy v0.9</header>
 			</options>
 		</response>
+	</rule>
+
+	<rule id="header-matcher" ruleset="rest/rest-rules.xml">
+		<match header="Accept">(application/x-www-form-urlencoded|\*/\*)</match>
 	</rule>
 
 	<default-rule proxy-url="http://mocksy.org" />

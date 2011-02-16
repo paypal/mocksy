@@ -28,6 +28,7 @@ import org.mocksy.Response;
 import org.mocksy.rules.http.HttpMatcher;
 import org.mocksy.rules.xml.XmlMatcher;
 import org.mocksy.server.http.MockHttpRequest;
+import org.mocksy.server.http.MockHttpServletRequest;
 
 public class MatcherTest {
 	private static final String BASE_URL = "http://localhost";
@@ -81,6 +82,13 @@ public class MatcherTest {
 		matcher.setParam( "testParam" );
 		matcher.setPattern( Pattern.compile( "three*" ) );
 		this.ruleset.addRule( responseRule );
+
+		responseRule = new ResponseRule( new Response( "response-four",
+		        "This is the fourth response" ) );
+		matcher = new HttpMatcher();
+		responseRule.addMatcher( matcher );
+		matcher.setMethod( "OPTIONS" );
+		this.ruleset.addRule( responseRule );
 	}
 
 	@Test
@@ -93,9 +101,6 @@ public class MatcherTest {
 		assertEquals( "xml-response-one", response.getId() );
 		assertEquals( "<doc type=\"xml\">response</doc>", response.toString() );
 	}
-
-	@Test
-	public void testMatchPostData() throws Exception {}
 
 	@Test
 	public void testMatchURI() throws Exception {
@@ -124,6 +129,17 @@ public class MatcherTest {
 		assertNotNull( response );
 		assertEquals( "response-three", response.getId() );
 		assertEquals( "This is the third response", response.toString() );
+	}
+
+	@Test
+	public void testMatchMethod() throws Exception {
+		MockHttpRequest request = new MockHttpRequest( BASE_URL );
+		( (MockHttpServletRequest) request.getServletRequest() )
+		        .setMethod( "OPTIONS" );
+		Response response = this.ruleset.process( request );
+		assertNotNull( response );
+		assertEquals( "response-four", response.getId() );
+		assertEquals( "This is the fourth response", response.toString() );
 	}
 
 	@Test

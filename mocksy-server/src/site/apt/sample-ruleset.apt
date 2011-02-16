@@ -9,6 +9,18 @@ features:
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
 
+	<rule id="error-matcher">
+		<not-match header="Host">localhost</not-match>
+		<not-match method="GET" />
+		<response class="org.mocksy.server.http.HttpResponse">
+			<source>not-allowed.html</source>
+			<options>
+				<delay>100</delay>
+				<statusCode>400</statusCode>
+			</options>
+		</response>
+	</rule>
+
 	<rule id="http-matchers" ruleset="rest/rest-rules.xml">
 		<match header="Accept">application/x-www-form-urlencoded</match>
 		<match param="username">new_user</match>
@@ -26,17 +38,6 @@ features:
 		</filter>
 	</rule>
 	
-	<rule id="error-matcher">
-		<not-match header="Host">localhost</not-match>
-		<response class="org.mocksy.server.http.HttpResponse">
-			<source>not-allowed.html</source>
-			<options>
-				<delay>100</delay>
-				<statusCode>400</statusCode>
-			</options>
-		</response>
-	</rule>
-
 	<default-rule proxy-url="http://mocksy.org/" />
 </rules>
 +----------------------------------------------------

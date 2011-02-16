@@ -56,6 +56,7 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 	private static final String CLASS_ATTRIB = "class";
 	private static final String HEADER_ATTRIB = "header";
 	private static final String PARAM_ATTRIB = "param";
+	private static final String METHOD_ATTRIB = "method";
 	private static final String RULE_TAG = "rule";
 	private static final String DEFAULT_RULE_TAG = "default-rule";
 	private static final String MATCH_TAG = "match";
@@ -357,9 +358,11 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 			        HEADER_ATTRIB ) );
 			( (HttpMatcher) matcher ).setParam( getAttribute( matchElem,
 			        PARAM_ATTRIB ) );
+			( (HttpMatcher) matcher ).setMethod( getAttribute( matchElem,
+			        METHOD_ATTRIB ) );
 		}
 		String pattern = matchElem.getTextContent();
-		if ( pattern != null ) {
+		if ( pattern != null && !"".equals(pattern) ) {
 			matcher.setPattern( Pattern.compile( pattern ) );
 		}
 		return matcher;

@@ -3,5 +3,27 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
     
-	<default-rule file="default.nvp"/>
+	<rule id="method-url-matcher" file="default.nvp">
+		<match method="POST" />
+		<match>/account/.*/</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<version>1.4</version>
+			<username>new_user</username>
+		</filter>
+	</rule>
+    
+	<rule id="param-matcher" file="default.nvp">
+		<match param="userid">5</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<version>1.4</version>
+			<username>test_user</username>
+		</filter>
+	</rule>
+
+	<default-rule file="default.nvp">
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<version>1.4</version>
+			<username>default_user</username>
+		</filter>
+	</default-rule>
 </rules>
