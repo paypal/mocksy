@@ -49,6 +49,7 @@ public class XslFilter implements ResponseFilter {
 	private Transformer transformer;
 	private Source relativeSource;
 	private String stylesheetLocation;
+	private String newContentType;
 
 	public XslFilter() {
 		this.transformer = null;
@@ -90,26 +91,26 @@ public class XslFilter implements ResponseFilter {
 	}
 
 	/**
-	 * Initializes the XslFilter.  The given Map of properties must contain
-	 * a "stylesheet" key whose value is a relative location to an XSL file.
-	 * The file will be discovered relative to the Source object set with
-	 * {@link #setRelativeSource(Source)}, which will probably be the 
-	 * location of the containing {@link org.mocksy.rules.Ruleset}.
+	 * Sets the MIME type of the content resulting from applying the
+	 * configured XSL transformation.
 	 * 
-	 * @param properties the Map containing the "stylesheet" key
+	 * @param contentType the MIME type of the transformed data
+	 */
+	public void setNewContentType(String contentType) {
+		this.newContentType = contentType;
+	}
+	
+	/**
+	 * Sets the relative location of the stylesheet to use for the XSL
+	 * transformation.
+	 * 
+	 * @param stylesheetLocation
 	 * @throws FilterException if the XSL stylesheet couldn't be found or
 	 * 		couldn't be processed properly.
 	 */
-	public void initialize(Map<String, String> properties)
-	        throws FilterException
-	{
-		if ( properties == null || !properties.containsKey( "stylesheet" ) ) {
-			throw new IllegalArgumentException(
-			        "XmlResponseFilter requires a 'stylesheet' property." );
-		}
+	public void setStylesheet(String stylesheetLocation) throws FilterException {
 		try {
-			URL xsltLocation = this.relativeSource.getRelativeURL( properties
-			        .get( "stylesheet" ) );
+			URL xsltLocation = this.relativeSource.getRelativeURL( stylesheetLocation );
 			this.stylesheetLocation = xsltLocation.toString();
 			StreamSource source = new StreamSource( xsltLocation.openStream() );
 			this.transformer = TransformerFactory.newInstance().newTransformer(
@@ -124,8 +125,34 @@ public class XslFilter implements ResponseFilter {
 		catch ( TransformerFactoryConfigurationError e ) {
 			throw new FilterException( e );
 		}
+		
+	}
+	@Override
+	/**
+	 * Initializes the XslFilter.  The given Map of properties must contain
+	 * a "stylesheet" key whose value is a relative location to an XSL file.
+	 * The file will be discovered relative to the Source object set with
+	 * {@link #setRelativeSource(Source)}, which will probably be the 
+	 * location of the containing {@link org.mocksy.rules.Ruleset}.
+	 * 
+	 * @param properties the Map containing the "stylesheet" and 
+	 * 		"content-type" keys
+	 * @throws FilterException if the XSL stylesheet couldn't be found or
+	 * 		couldn't be processed properly.
+	 */
+	public void initialize(Map<String, String> properties)
+	        throws FilterException
+	{
+		if ( properties == null || !properties.containsKey( "stylesheet" ) ) {
+			throw new IllegalArgumentException(
+			        "XmlResponseFilter requires a 'stylesheet' property." );
+		}
+		this.setStylesheet( properties
+		        .get( "stylesheet" ) );
+		this.setNewContentType( properties.get( "content-type" ) );
 	}
 
+	@Override
 	/**
 	 * Sets the Source relative to whice the stylesheet will be found.
 	 * @param relativeSource Source object relative to which we'll look for
@@ -135,14 +162,32 @@ public class XslFilter implements ResponseFilter {
 		this.relativeSource = relativeSource;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		Map<String, String> props = new HashMap<String, String>();
 		if ( this.stylesheetLocation != null ) {
 			props.put( "stylesheet", this.stylesheetLocation );
+			props.put( "content-type", this.newContentType );
 		}
 		return props;
 	}
+	
+	@Override
+	/**
+	 * Returns the configured content type for this filter.  If the XSLT
+	 * template modifies the format of the original XML document, the MIME
+	 * type of the new format should be set using the setNewContentType()
+	 * method or by setting the "content-type" property during the initialize()
+	 * call.
+	 * 
+	 * If the XSLT template doesn't actually modify the content type, then
+	 * no need to configure anything, and this will return null.
+	 */
+    public String getNewContentType() {
+	    return this.newContentType;
+    }
 
+	@Override
 	/**
 	 * Transforms the XML document in the InputStream using the XSL
 	 * stylesheet in this filter.

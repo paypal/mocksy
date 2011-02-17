@@ -1,5 +1,7 @@
 package org.mocksy.filter;
 
+import java.io.IOException;
+
 /*
  * Copyright 2009, PayPal
  *
@@ -22,7 +24,7 @@ package org.mocksy.filter;
  * exception that caused the problem and groups them under a
  * single type.
  */
-public class FilterException extends Exception {
+public class FilterException extends IOException {
 	/**
 	 * 
 	 */

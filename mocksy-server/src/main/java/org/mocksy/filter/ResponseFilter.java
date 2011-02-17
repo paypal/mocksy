@@ -70,4 +70,15 @@ public interface ResponseFilter {
 	 */
 	Map<String, String> getProperties();
 
+	/**
+	 * Returns the new MIME type of the resulting InputStream after calling
+	 * {@link #filter(InputStream)}.  This could be particularly useful in cases
+	 * where the content is being transformed from one format to another.
+	 * 
+	 * In cases where the format is not changing, the return value should be null.
+	 * 
+	 * @return the MIME type of the filtered stream, or null if the filter is 
+	 * 		not changing the content type
+	 */
+	String getNewContentType();
 }

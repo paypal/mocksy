@@ -65,6 +65,15 @@ public class PropertyFilter implements ResponseFilter {
 		this.properties.putAll( properties );
 
 	}
+ 
+	@Override
+	/**
+	 * Returns null, indicating that this filter does not modify the format
+	 * of the data in the input stream.
+	 */
+    public String getNewContentType() {
+	    return null;
+    }
 
 	/**
 	 * Returns the Map of properties to use for replacement in this

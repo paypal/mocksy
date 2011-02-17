@@ -117,14 +117,6 @@ public class RequestServlet extends HttpServlet {
 			// get the response data
 			data = matchResponse.toByteArray();
 		}
-		catch ( IOException e ) {
-			// report processing errors as 404s
-			String msg = "Cannot locate '" + matchResponse.getId() + "'";
-			logger.severe( msg );
-			resp.setContentType( "text/plain" );
-			resp.sendError( HttpServletResponse.SC_NOT_FOUND, msg );
-			return;
-		}
 		catch ( FilterException e ) {
 			// handle filtering problems
 			String msg = "Error processing response '" + matchResponse.getId()
@@ -132,6 +124,14 @@ public class RequestServlet extends HttpServlet {
 			logger.severe( msg );
 			resp.setContentType( "text/plain" );
 			resp.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, msg );
+			return;
+		}
+		catch ( IOException e ) {
+			// report processing errors as 404s
+			String msg = "Cannot locate '" + matchResponse.getId() + "'";
+			logger.severe( msg );
+			resp.setContentType( "text/plain" );
+			resp.sendError( HttpServletResponse.SC_NOT_FOUND, msg );
 			return;
 		}
 		boolean isError = false;
