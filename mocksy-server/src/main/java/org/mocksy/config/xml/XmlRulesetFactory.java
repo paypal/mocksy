@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.commons.beanutils.BeanUtils;
+import org.mocksy.RawResponse;
 import org.mocksy.Response;
 import org.mocksy.config.RulesetFactoryFactory;
 import org.mocksy.config.UpdateableRulesetFactory;
@@ -210,18 +211,25 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		String idAttrib = getAttribute( ruleNode, "id" );
 		String id = ( ( idAttrib != null ) ? idAttrib : defaultId );
 
-		return new ResponseRule( getResponse( id, ruleNode ) );
+		ResponseRule rule = new ResponseRule( getResponse( id, ruleNode ) );
 
+		// the (optional) filter class
+		List<ResponseFilter> filters = getFilters( ruleNode );
+		for (ResponseFilter filter : filters) {
+			rule.addFilter( filter );
+		}
+		
+		return rule;
 	}
 
-	private Response getResponse(String id, Element ruleNode) throws Exception {
+	private RawResponse getResponse(String id, Element ruleNode) throws Exception {
 		String fileName = getAttribute( ruleNode, FILE_ATTRIB );
-		Class<Response> responseClass = null;
+		Class<RawResponse> responseClass = null;
 		URL responseURL = null;
 		Map<String, String> options = new HashMap<String, String>();
 		if ( fileName != null ) {
 			responseURL = this.source.getRelativeURL( fileName );
-			responseClass = Response.class;
+			responseClass = RawResponse.class;
 		}
 		else {
 			Element responseNode = getSingleChild( ruleNode, RESPONSE_TAG );
@@ -231,7 +239,7 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 			}
 			String responseClassName = getRequiredAttribute( responseNode,
 			        CLASS_ATTRIB );
-			responseClass = (Class<Response>) Class.forName( responseClassName );
+			responseClass = (Class<RawResponse>) Class.forName( responseClassName );
 			Element sourceNode = getSingleChild( responseNode, SOURCE_TAG );
 			if ( sourceNode == null ) {
 				throw new IOException( "Element " + RESPONSE_TAG + " needs a <"
@@ -252,10 +260,8 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 			}
 		}
 
-		// the (optional) filter class
-		List<ResponseFilter> filters = getFilters( ruleNode );
-		Response response = this.createResponse( responseClass, id, responseURL
-		        .openStream(), filters );
+		RawResponse response = this.createResponse( responseClass, id, responseURL
+		        .openStream() );
 		if ( ruleNode.hasAttribute( "delay" ) ) {
 			response.setDelay( Integer.parseInt( ruleNode
 			        .getAttribute( "delay" ) ) );
@@ -271,16 +277,15 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		return response;
 	}
 
-	private Response createResponse(Class<Response> responseClass, String id,
-	        InputStream responseContent, List<ResponseFilter> filters)
+	private RawResponse createResponse(Class<RawResponse> responseClass, String id,
+	        InputStream responseContent)
 	        throws Exception
 	{
 		try {
-			Constructor<Response> resConstructor = responseClass
-			        .getConstructor( String.class, InputStream.class,
-			                List.class );
-			Response response = resConstructor.newInstance( id,
-			        responseContent, filters );
+			Constructor<RawResponse> resConstructor = responseClass
+			        .getConstructor( String.class, InputStream.class );
+			RawResponse response = resConstructor.newInstance( id,
+			        responseContent );
 			return response;
 		}
 		catch ( Exception e ) {

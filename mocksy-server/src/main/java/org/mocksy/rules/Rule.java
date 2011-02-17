@@ -22,7 +22,7 @@ import org.mocksy.Response;
 
 /**
  * A Rule is the basic function in Mocksy.  It takes a {@link org.mocksy.Request}
- * and converts it into a {@link org.mocksy.Response} with the {@link #process(Request)}
+ * and converts it into a {@link org.mocksy.RawResponse} with the {@link #process(Request)}
  * method.
  * 
  * The associated Matchers are used to determine the suitability of this Rule
@@ -62,7 +62,7 @@ public interface Rule {
 	 * this Request before calling {@link #process(Request)}.
 	 * 
 	 * @param request the Request to process
-	 * @return the {@link org.mocksy.Response} that this Rule creates for 
+	 * @return the {@link org.mocksy.RawResponse} that this Rule creates for 
 	 * 		the given Request
 	 * @throws Exception
 	 */

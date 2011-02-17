@@ -1,6 +1,10 @@
 package org.mocksy.filter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.mocksy.Response;
@@ -22,6 +26,7 @@ import org.mocksy.Response;
  */
 
 public class FilteredResponse implements Response {
+	private static final int BUFFER_SIZE = 1024 * 10;
 	private Response baseResponse;
 	private List<ResponseFilter> filters;
 	private String newContentType;
@@ -79,6 +84,16 @@ public class FilteredResponse implements Response {
 		}
 	}
 	
+	/**
+	 * Returns the list of filters that are to be applied as part of this
+	 * response.
+	 * 
+	 * @return an unmodifiable list of the {@link ResponseFilter}s on this response. 
+	 */
+	public List<ResponseFilter> getFilters() {
+		return Collections.unmodifiableList( this.filters );
+	}
+	
 	@Override
 	/**
 	 * Returns the response contents as a byte[] after applying the filters.
@@ -88,8 +103,43 @@ public class FilteredResponse implements Response {
 	 * @throws  \--FilterException if there's a problem filtering the response
 	 */
     public byte[] toByteArray() throws IOException {
-	    // TODO Auto-generated method stub
-	    return null;
+		byte[] data = this.baseResponse.toByteArray();
+		
+		// convert response contents to an InputStream
+		InputStream stream = null;
+		ByteArrayOutputStream responseData = new ByteArrayOutputStream();
+		try {
+			// process through the filters
+			stream = this.getFilteredStream( new ByteArrayInputStream( data ) );
+			byte[] bytes = new byte[BUFFER_SIZE];
+			int read = -1;
+			while ( ( read = stream.read( bytes ) ) > -1 ) {
+				responseData.write( bytes, 0, read );
+			}
+		}
+		finally {
+			if ( stream != null ) {
+				stream.close();
+			}
+		}
+		return responseData.toByteArray();
     }
-
+	
+	/**
+	 * Returns an InputStream that flows through the list of filters.
+	 * 
+	 * @param stream the InputStream to filter 
+	 * @return the filtered InputStream 
+	 * @throws FilterException if there is a problem filtering the response data
+	 */
+	private InputStream getFilteredStream(InputStream stream)
+	        throws FilterException
+	{
+		InputStream filteredStream = stream;
+		// this seems like it's happening in the reverse order
+		for ( ResponseFilter filter : this.filters ) {
+			filteredStream = filter.filter( filteredStream );
+		}
+		return filteredStream;
+	}
 }

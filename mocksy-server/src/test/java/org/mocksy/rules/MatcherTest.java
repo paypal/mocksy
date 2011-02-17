@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
+import org.mocksy.RawResponse;
 import org.mocksy.Response;
 import org.mocksy.rules.http.HttpMatcher;
 import org.mocksy.rules.xml.XmlMatcher;
@@ -40,10 +41,10 @@ public class MatcherTest {
 		// nested ruleset
 		this.nestedRuleset = new Ruleset();
 		// nested default rule
-		this.nestedRuleset.setDefaultRule( new ResponseRule( new Response(
+		this.nestedRuleset.setDefaultRule( new ResponseRule( new RawResponse(
 		        "nested-default", "This is a nested default response." ) ) );
 
-		Response xmlResponse = new Response( "xml-response-one",
+		RawResponse xmlResponse = new RawResponse( "xml-response-one",
 		        "<doc type=\"xml\">response</doc>" );
 		xmlResponse.setContentType( "text/xml" );
 		ResponseRule responseRule = new ResponseRule( xmlResponse );
@@ -60,14 +61,14 @@ public class MatcherTest {
 		nestedRule.addMatcher( nestedMatcher );
 		this.ruleset.addRule( nestedRule );
 
-		responseRule = new ResponseRule( new Response( "response-one",
+		responseRule = new ResponseRule( new RawResponse( "response-one",
 		        "This is the first response" ) );
 		HttpMatcher matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
 		matcher.setPattern( Pattern.compile( ".*/resp-one/.*" ) );
 		this.ruleset.addRule( responseRule );
 
-		responseRule = new ResponseRule( new Response( "response-two",
+		responseRule = new ResponseRule( new RawResponse( "response-two",
 		        "This is the second response" ) );
 		matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
@@ -75,7 +76,7 @@ public class MatcherTest {
 		matcher.setPattern( Pattern.compile( "two" ) );
 		this.ruleset.addRule( responseRule );
 
-		responseRule = new ResponseRule( new Response( "response-three",
+		responseRule = new ResponseRule( new RawResponse( "response-three",
 		        "This is the third response" ) );
 		matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );
@@ -83,7 +84,7 @@ public class MatcherTest {
 		matcher.setPattern( Pattern.compile( "three*" ) );
 		this.ruleset.addRule( responseRule );
 
-		responseRule = new ResponseRule( new Response( "response-four",
+		responseRule = new ResponseRule( new RawResponse( "response-four",
 		        "This is the fourth response" ) );
 		matcher = new HttpMatcher();
 		responseRule.addMatcher( matcher );

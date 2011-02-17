@@ -20,13 +20,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.mocksy.Request;
 import org.mocksy.Response;
+import org.mocksy.filter.FilteredResponse;
+import org.mocksy.filter.ResponseFilter;
 
 public class ResponseRule implements Rule {
 	private Collection<Matcher> matchers = new ArrayList<Matcher>();
-	private Response response;
+	private FilteredResponse response;
 
 	public ResponseRule(Response response) {
-		this.response = response;
+		if (response instanceof FilteredResponse) {
+			this.response = (FilteredResponse)response;
+		} else {
+			this.response = new FilteredResponse(response);
+		}
 		this.clear();
 	}
 
@@ -34,6 +40,10 @@ public class ResponseRule implements Rule {
 		this.matchers.add( matcher );
 	}
 
+	public void addFilter(ResponseFilter filter) {
+		this.response.addFilter( filter );
+	}
+	
 	public boolean matches(Request request) {
 		if ( this.matchers.isEmpty() ) return false;
 		for ( Matcher matcher : this.matchers ) {
@@ -54,7 +64,7 @@ public class ResponseRule implements Rule {
 		return this.matchers;
 	}
 
-	public Response getResponse() {
+	public FilteredResponse getResponse() {
 		return this.response;
 	}
 

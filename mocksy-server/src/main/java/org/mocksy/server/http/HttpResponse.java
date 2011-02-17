@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.mocksy.Response;
+import org.mocksy.RawResponse;
 import org.mocksy.filter.ResponseFilter;
 
 /*
@@ -24,7 +24,7 @@ import org.mocksy.filter.ResponseFilter;
  *  limitations under the License.
  */
 
-public class HttpResponse extends Response {
+public class HttpResponse extends RawResponse {
 	private int statusCode = 200;
 	private Map<String, String> headers = new HashMap<String, String>();
 

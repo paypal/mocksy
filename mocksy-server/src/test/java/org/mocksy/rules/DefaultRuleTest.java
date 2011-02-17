@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
+import org.mocksy.RawResponse;
 import org.mocksy.Response;
 import org.mocksy.rules.http.HttpMatcher;
 import org.mocksy.server.http.MockHttpRequest;
@@ -36,7 +37,7 @@ public class DefaultRuleTest {
 		// nested ruleset
 		this.nestedRuleset = new Ruleset();
 		// nested default rule
-		this.nestedRuleset.setDefaultRule( new ResponseRule( new Response(
+		this.nestedRuleset.setDefaultRule( new ResponseRule( new RawResponse(
 		        "nested-default", "This is a nested default response." ) ) );
 
 		this.ruleset = new Ruleset();
@@ -47,7 +48,7 @@ public class DefaultRuleTest {
 		nestedRule.addMatcher( nestedMatcher );
 		this.ruleset.addRule( nestedRule );
 		// main default rule
-		this.ruleset.setDefaultRule( new ResponseRule( new Response( "default",
+		this.ruleset.setDefaultRule( new ResponseRule( new RawResponse( "default",
 		        "This is a default response." ) ) );
 	}
 
