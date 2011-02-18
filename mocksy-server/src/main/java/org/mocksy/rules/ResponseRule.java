@@ -25,14 +25,10 @@ import org.mocksy.filter.ResponseFilter;
 
 public class ResponseRule implements Rule {
 	private Collection<Matcher> matchers = new ArrayList<Matcher>();
-	private FilteredResponse response;
+	private Response response;
 
 	public ResponseRule(Response response) {
-		if (response instanceof FilteredResponse) {
-			this.response = (FilteredResponse)response;
-		} else {
-			this.response = new FilteredResponse(response);
-		}
+		this.response = response;
 		this.clear();
 	}
 
@@ -41,7 +37,10 @@ public class ResponseRule implements Rule {
 	}
 
 	public void addFilter(ResponseFilter filter) {
-		this.response.addFilter( filter );
+		if (!(this.response instanceof FilteredResponse) ) {
+			this.response = new FilteredResponse( this.response );
+		}
+		((FilteredResponse)this.response).addFilter( filter );
 	}
 	
 	public boolean matches(Request request) {
@@ -64,7 +63,7 @@ public class ResponseRule implements Rule {
 		return this.matchers;
 	}
 
-	public FilteredResponse getResponse() {
+	public Response getResponse() {
 		return this.response;
 	}
 

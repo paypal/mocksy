@@ -1,13 +1,15 @@
 package org.mocksy.filter;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mocksy.Response;
+import org.mocksy.util.StreamData;
 
 /*
  * Copyright 2011, PayPal
@@ -26,6 +28,8 @@ import org.mocksy.Response;
  */
 
 public class FilteredResponse implements Response {
+	private static final Logger logger = Logger.getLogger( FilteredResponse.class
+	        .getName() );
 	private static final int BUFFER_SIZE = 1024 * 10;
 	private Response baseResponse;
 	private List<ResponseFilter> filters;
@@ -37,6 +41,9 @@ public class FilteredResponse implements Response {
 	 * @param response the base {@link Response} to filter
 	 */
 	public FilteredResponse(Response response) {
+		if (response == null) {
+			throw new IllegalArgumentException("Response to be filtered cannot be null.");	
+		}
 		this.baseResponse = response;
 		this.filters = new LinkedList<ResponseFilter>();
 	}
@@ -107,24 +114,43 @@ public class FilteredResponse implements Response {
 		
 		// convert response contents to an InputStream
 		InputStream stream = null;
-		ByteArrayOutputStream responseData = new ByteArrayOutputStream();
 		try {
 			// process through the filters
 			stream = this.getFilteredStream( new ByteArrayInputStream( data ) );
-			byte[] bytes = new byte[BUFFER_SIZE];
-			int read = -1;
-			while ( ( read = stream.read( bytes ) ) > -1 ) {
-				responseData.write( bytes, 0, read );
-			}
+			byte[] filteredData = StreamData.getBytesFromStream( stream, BUFFER_SIZE );
+			return filteredData;
 		}
 		finally {
 			if ( stream != null ) {
 				stream.close();
 			}
 		}
-		return responseData.toByteArray();
     }
 	
+	@Override
+    public FilteredResponse clone() {
+		FilteredResponse clone = new FilteredResponse(this.baseResponse);
+		clone.newContentType = this.newContentType;
+		clone.filters.addAll( this.filters );
+		return clone;
+	}
+
+	/**
+	 * Returns the filtered response contents as a String.
+	 *
+	 * @return response contents
+	 */
+	@Override
+	public String toString() {
+		try {
+			return new String( this.toByteArray( ) );
+		}
+		catch ( IOException e ) {
+			logger.log( Level.SEVERE, "Error getting response data", e );
+			return e.getMessage();
+		}
+	}
+
 	/**
 	 * Returns an InputStream that flows through the list of filters.
 	 * 

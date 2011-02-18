@@ -18,8 +18,11 @@ package org.mocksy.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.mocksy.Request;
 import org.mocksy.Response;
+import org.mocksy.filter.FilteredResponse;
+import org.mocksy.filter.ResponseFilter;
 
 /**
  * A RulesetRule is a {@link org.mocksy.rules.Rule} that delegates its processing
@@ -32,6 +35,7 @@ import org.mocksy.Response;
 public class RulesetRule implements Rule {
 	private Collection<Matcher> matchers = new ArrayList<Matcher>();
 	private Ruleset ruleset;
+	private List<ResponseFilter> filters = new ArrayList<ResponseFilter>();
 
 	/**
 	 * A RulesetRule must be created with a Ruleset.
@@ -59,6 +63,10 @@ public class RulesetRule implements Rule {
 		this.matchers.add( matcher );
 	}
 
+	public void addFilter(ResponseFilter filter) {
+		this.filters.add(filter);
+	}
+	
 	public boolean matches(Request request) {
 		if ( this.matchers.isEmpty() ) return false;
 		for ( Matcher matcher : this.matchers ) {
@@ -68,7 +76,23 @@ public class RulesetRule implements Rule {
 	}
 
 	public Response process(Request request) throws Exception {
-		return this.ruleset.process( request );
+		Response baseResponse = this.ruleset.process(request);
+		// if we're not filtering anything, let's just move on.
+		if (this.filters.isEmpty()) {
+			return baseResponse;
+		}
+		
+		// otherwise, we create a new filtered response and apply all the filters
+		FilteredResponse filteredResponse = null;
+		if (baseResponse instanceof FilteredResponse) {
+			filteredResponse = ((FilteredResponse)baseResponse).clone();
+		} else {
+			filteredResponse = new FilteredResponse(baseResponse);
+		}
+		for (ResponseFilter filter : this.filters) {
+			filteredResponse.addFilter( filter );
+		}
+		return filteredResponse;
 	}
 
 	public Collection<Matcher> getMatchers() {

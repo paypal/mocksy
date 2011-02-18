@@ -25,6 +25,9 @@
 
 	<rule id="header-matcher" ruleset="rest/rest-rules.xml">
 		<match header="Accept">(application/x-www-form-urlencoded|\*/\*)</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<version>1.4</version>
+		</filter>
 	</rule>
 
 	<default-rule proxy-url="http://mocksy.org" />

@@ -196,7 +196,15 @@ public class XmlRulesetFactory implements UpdateableRulesetFactory {
 		String rulesetName = getRequiredAttribute( ruleNode, RULESET_ATTRIB );
 		Ruleset subRuleset = RulesetFactoryFactory.getRulesetFactory(
 		        rulesetName, this.source ).getRuleset();
-		return new RulesetRule( subRuleset );
+		RulesetRule rule = new RulesetRule( subRuleset );
+		
+		// the (optional) filter class
+		List<ResponseFilter> filters = getFilters( ruleNode );
+		for (ResponseFilter filter : filters) {
+			rule.addFilter( filter );
+		}
+
+		return rule;
 	}
 
 	private HttpProxyRule getProxyRule(Element ruleNode) throws Exception {

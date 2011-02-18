@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.serialize.XMLSerializer;
+import org.mocksy.Response;
 import org.mocksy.filter.FilteredResponse;
 import org.mocksy.filter.ResponseFilter;
 import org.mocksy.rules.Matcher;
@@ -99,7 +100,7 @@ public class XmlSerializer {
 		}
 		if ( rule instanceof ResponseRule ) {
 			Element responseElem = rulesDoc.createElement( "response" );
-			FilteredResponse response = ( (ResponseRule) rule ).getResponse();
+			Response response = ( (ResponseRule) rule ).getResponse();
 			if ( response != null ) {
 				populateResponseElement( rulesDoc, responseElem, response );
 			}
@@ -149,13 +150,13 @@ public class XmlSerializer {
 	}
 
 	private void populateResponseElement(Document rulesDoc, Element element,
-	        FilteredResponse response)
+	        Response response)
 	{
 		element.setAttribute( "id", response.getId() );
 		element.setAttribute( "contentType", response.getContentType() );
 		element.setTextContent( response.toString() );
-		if ( !response.getFilters().isEmpty() ) {
-			for ( ResponseFilter filter : response.getFilters() ) {
+		if (response instanceof FilteredResponse) {
+			for ( ResponseFilter filter : ((FilteredResponse)response).getFilters() ) {
 				Element filterNode = rulesDoc.createElement( "filter" );
 				filterNode.setAttribute( "class", filter.getClass().getName() );
 				element.appendChild( filterNode );

@@ -17,7 +17,6 @@ package org.mocksy;
  */
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -26,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.mocksy.filter.FilterException;
 import org.mocksy.filter.ResponseFilter;
+import org.mocksy.util.StreamData;
 
 /**
  * Basic abstraction for a service response.
@@ -160,20 +160,17 @@ public class RawResponse implements Response {
 	private synchronized byte[] getData() {
 		if ( this.data == null && this.stream != null ) {
 			try {
-				ByteArrayOutputStream output = new ByteArrayOutputStream();
-				byte[] buffer = new byte[BUFFER_SIZE];
-				int read = -1;
-				while ( ( read = this.stream.read( buffer ) ) > -1 ) {
-					output.write( buffer, 0, read );
-				}
-				this.data = output.toByteArray();
-				output.close();
-				this.stream.read( this.data );
+				this.data = StreamData.getBytesFromStream( this.stream, BUFFER_SIZE);
 			}
 			catch ( IOException e ) {
 				logger.log( Level.SEVERE, "Error reading response stream", e );
 			}
 			finally {
+				try {
+					this.stream.close();
+				} catch (IOException f) {
+					logger.log( Level.WARNING, "Couldn't close the response stream", f );
+				}
 				this.stream = null;
 			}
 		}
