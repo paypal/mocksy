@@ -1,0 +1,1 @@
+responseEnvelope.timestamp=2011-02-02T16%3A16%3A32.769-08%3A00&responseEnvelope.ack=Failure&responseEnvelope.correlationId=9c22844176568&responseEnvelope.build=1655692&error(0).errorId=${errorId}&error(0).domain=PLATFORM&error(0).severity=Error&error(0).category=Application&error(0).message=${message}

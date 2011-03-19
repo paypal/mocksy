@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://mocksy.org/RULESET/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
+
+	<rule id="INVALID_ACTION_TYPE" file="pay_err_template.nvp">
+		<not-match param="actionType">PAY|CREATE|PAY_PRIMARY</not-match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>540031</errorId>
+			<message>The system did not recognize the action type</message>
+		</filter>
+	</rule>
+
+	<rule id="INVALID_CURENCY_CODE" file="pay_err_template.nvp">
+		<not-match param="currencyCode">AUD|BRL|CAD|CZK|DKK|EUR|HKD|HUF|ILS|JPY|MYR|MXN|NOK|NZD|PHP|PLN|GBP|SGD|SEK|CHF|TWD|THB|USD</not-match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>580022</errorId>
+			<message>Invalid request parameter</message>
+			<parameter>currencyCode</parameter>
+		</filter>
+	</rule>
+
+	<rule id="INVALID_CANCEL_URL" file="pay_err_template.nvp">
+		<not-match param="cancelUrl">.+</not-match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>580022</errorId>
+			<message>Invalid request parameter</message>
+			<parameter>cancelUrl</parameter>
+		</filter>
+	</rule>
+
+	<rule id="INVALID_RETURN_URL" file="pay_err_template.nvp">
+		<not-match param="returnUrl">.+</not-match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>580022</errorId>
+			<message>Invalid request parameter</message>
+			<parameter>returnUrl</parameter>
+		</filter>
+	</rule>
+
+	<rule id="INVALID_ERROR_LANGUAGE" file="pay_err_template.nvp">
+		<not-match param="requestEnvelope.errorLanguage">en_US</not-match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>580022</errorId>
+			<message>Invalid request parameter</message>
+			<parameter>errorLanguage</parameter>
+		</filter>
+	</rule>
+
+	<rule id="PAY_INVALID_ACCT_SND_CNTRY_EMAIL" file="pay_err_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_INVALID_ACCT_SND_CNTRY_EMAIL@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>539043</errorId>
+			<message>The email account is based in a country that is not enabled
+				to send payments</message>
+		</filter>
+	</rule>
+
+	<rule id="PAY_INVALID_ACCT_RCV_CNTRY_EMAIL" file="pay_err_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_INVALID_ACCT_RCV_CNTRY_EMAIL@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>539041</errorId>
+			<message>The email account is based in a country that is not enabled
+				to receive payments</message>
+		</filter>
+	</rule>
+
+	<rule id="PAY_INVALID_ACCT_SET_RCVR" file="pay_err_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_INVALID_ACCT_SET_RCVR@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>559044</errorId>
+			<message>Account setting on the receiver prohibited the payment
+			</message>
+		</filter>
+	</rule>
+
+	<rule id="PAY_ACCT_EXD_RCV_LMT" file="pay_err_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_ACCT_EXD_RCV_LMT@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<errorId>579045</errorId>
+			<message>The email account exceeds the receiving limit</message>
+		</filter>
+	</rule>
+
+	<rule id="PAY_SUCCESS" file="pay_success_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_SUCCESS@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<payKey>AP-PAY-SUCCESS</payKey>
+		</filter>
+	</rule>
+
+	<rule id="PAY_SUCCESS_USR_CANCEL" file="pay_success_template.nvp">
+		<match param="receiverList.receiver(0).email">PAY_SUCCESS_USR_CANCEL@test.com</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+			<payKey>AP-PAY-SUCCESS-USR-CANCEL</payKey>
+		</filter>
+	</rule>
+
+	<rule id="PAY_CHAIN_BASE_RULES" ruleset="rules_pay_chained.xml">
+		<match param="receiverList.receiver(0).email">.+</match>
+		<match param="receiverList.receiver(0).primary">true</match>
+		<match param="receiverList.receiver(0).amount">.+</match>
+		<match param="receiverList.receiver(1).email">.+</match>
+		<match param="receiverList.receiver(1).primary">false</match>
+		<match param="receiverList.receiver(1).amount">.+</match>
+	</rule>
+
+
+	<default-rule file="default-pay.txt" />
+
+</rules>

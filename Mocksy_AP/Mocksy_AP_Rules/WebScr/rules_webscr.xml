@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules xmlns="http://mocksy.org/RULESET/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mocksy.org/RULESET/1.0.0 http://mocksy.org/schema/mocksy-ruleset-1.0.0.xsd">
+
+	<rule id="webscr_cmd" file="error.nvp">
+		<not-match param="cmd">_ap-payment</not-match>
+	</rule>
+
+	<rule id="userCancel" file="userTemplate.htm">
+		<match param="paykey" >AP-PAY-SUCCESS-USR-CANCEL</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+		    <redirectUrl>http://svcs.sandbox.paypal.com</redirectUrl>
+		</filter>
+	</rule>
+	
+	<rule id="userReturn" file="userTemplate.htm">
+		<match param="paykey" >AP-PAY-SUCCESS</match>
+		<filter class="org.mocksy.filter.PropertyFilter">
+		    <redirectUrl>http://www.paypal.com</redirectUrl>
+		</filter>
+	</rule>
+	
+	<default-rule file="error.nvp" />
+
+</rules>

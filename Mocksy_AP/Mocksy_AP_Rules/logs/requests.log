@@ -1,0 +1,62 @@
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.319: Attempting HTTP Query match.  Query String: /AdaptivePayments/Pay/ 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.329: HTTP Query matcher, pattern .*/webscr.*: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.329: Attempting HTTP header match.  Header 'X-PAYPAL-SECURITY-USERID' with value 'ashsar_1233867711_biz_api1.yahoo.com' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.330: HTTP Header matcher, header X-PAYPAL-SECURITY-USERID, pattern .+: Matched value ashsar_1233867711_biz_api1.yahoo.com 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.330: Attempting HTTP header match.  Header 'X-PAYPAL-SECURITY-SIGNATURE' with value 'AhoWT5xdNuDRaHutY9.IsMFBBvRtAXmOyTsd-WC-BiEzYjbgceQTkQX1' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.330: HTTP Header matcher, header X-PAYPAL-SECURITY-SIGNATURE, pattern .+: Matched value AhoWT5xdNuDRaHutY9.IsMFBBvRtAXmOyTsd-WC-BiEzYjbgceQTkQX1 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.330: Attempting HTTP header match.  Header 'X-PAYPAL-REQUEST-DATA-FORMAT' with value 'NV' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.331: HTTP Header matcher, header X-PAYPAL-REQUEST-DATA-FORMAT, pattern NV|SOAP|JSON: Matched value NV 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.331: Attempting HTTP header match.  Header 'X-PAYPAL-RESPONSE-DATA-FORMAT' with value 'NV' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.331: HTTP Header matcher, header X-PAYPAL-RESPONSE-DATA-FORMAT, pattern NV|SOAP|JSON: Matched value NV 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.331: Attempting HTTP header match.  Header 'X-PAYPAL-APPLICATION-ID' with value 'APP-80W284485P519543T' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.331: HTTP Header matcher, header X-PAYPAL-APPLICATION-ID, pattern .+: Matched value APP-80W284485P519543T 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.351: Attempting HTTP Query match.  Query String: /AdaptivePayments/Pay/ 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.352: HTTP Query matcher, pattern .*/Pay.*: Matched value /AdaptivePayments/Pay/ 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.375: Attempting HTTP parameter match.  Parmeter 'actionType' with value(s) '[Ljava.lang.String;@7f4d1d41' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.376: HTTP Param matcher, parameter actionType, pattern PAY|CREATE|PAY_PRIMARY: Matched value PAY 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.376: Attempting HTTP parameter match.  Parmeter 'currencyCode' with value(s) '[Ljava.lang.String;@235dd910' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.376: HTTP Param matcher, parameter currencyCode, pattern AUD|BRL|CAD|CZK|DKK|EUR|HKD|HUF|ILS|JPY|MYR|MXN|NOK|NZD|PHP|PLN|GBP|SGD|SEK|CHF|TWD|THB|USD: Matched value USD 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.376: Attempting HTTP parameter match.  Parmeter 'cancelUrl' with value(s) '[Ljava.lang.String;@6655bb93' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.376: HTTP Param matcher, parameter cancelUrl, pattern .+: Matched value http://localhost:9090/MocksySample/smcancel.jsp 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.377: Attempting HTTP parameter match.  Parmeter 'returnUrl' with value(s) '[Ljava.lang.String;@68de462' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.377: HTTP Param matcher, parameter returnUrl, pattern .+: Matched value http://localhost:9090/MocksySample/smsuccess.jsp 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.382: Attempting HTTP parameter match.  Parmeter 'requestEnvelope.errorLanguage' with value(s) '[Ljava.lang.String;@6aba4211' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.382: HTTP Param matcher, parameter requestEnvelope.errorLanguage, pattern en_US: Matched value en_US 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.382: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@6a47a0d4' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.382: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_INVALID_ACCT_SND_CNTRY_EMAIL@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.383: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@48ff4cf' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.383: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_INVALID_ACCT_RCV_CNTRY_EMAIL@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.384: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@7114460' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.384: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_INVALID_ACCT_SET_RCVR@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.384: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@7e9ffe3f' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.384: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_ACCT_EXD_RCV_LMT@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.385: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@39ed1b0b' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.385: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_SUCCESS@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.385: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@7d8a8ce2' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.385: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_SUCCESS_USR_CANCEL@test.com: No match. 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.385: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@132789d2' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.386: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern .+: Matched value PAY_CHAIN_INVALID_BUS_ACCT_PRIMARY@test.com 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.386: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).primary' with value(s) '[Ljava.lang.String;@8c943d1' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.386: HTTP Param matcher, parameter receiverList.receiver(0).primary, pattern true: Matched value true 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.386: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).amount' with value(s) '[Ljava.lang.String;@558352d8' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.387: HTTP Param matcher, parameter receiverList.receiver(0).amount, pattern .+: Matched value 10.0 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.387: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(1).email' with value(s) '[Ljava.lang.String;@20b40ec4' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.387: HTTP Param matcher, parameter receiverList.receiver(1).email, pattern .+: Matched value PAY_CHAIN_INVALID_BUS_ACCT_SECONDARY@test.com 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.387: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(1).primary' with value(s) '[Ljava.lang.String;@d3576a2' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.388: HTTP Param matcher, parameter receiverList.receiver(1).primary, pattern false: Matched value false 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.388: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(1).amount' with value(s) '[Ljava.lang.String;@30ff8c74' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.388: HTTP Param matcher, parameter receiverList.receiver(1).amount, pattern .+: Matched value 9.0 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.399: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).primary' with value(s) '[Ljava.lang.String;@30ff94b1' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.399: HTTP Param matcher, parameter receiverList.receiver(0).primary, pattern true: Matched value true 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.399: Attempting HTTP parameter match.  Parmeter 'feesPayer' with value(s) '[Ljava.lang.String;@5b7b0998' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.400: HTTP Param matcher, parameter feesPayer, pattern SENDER|PRIMARYRECEIVER|EACHRECEIVER||SECONDRYONLY
+		: Matched value EACHRECEIVER 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.400: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(0).email' with value(s) '[Ljava.lang.String;@6ab30913' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.400: HTTP Param matcher, parameter receiverList.receiver(0).email, pattern PAY_CHAIN_INVALID_BUS_ACCT_PRIMARY@test.com: Matched value PAY_CHAIN_INVALID_BUS_ACCT_PRIMARY@test.com 
+[org.mocksy.rules.http.HttpMatcher - FINEST] 14-Feb-11; 15:55:28.400: Attempting HTTP parameter match.  Parmeter 'receiverList.receiver(1).email' with value(s) '[Ljava.lang.String;@1018f51f' 
+[org.mocksy.rules.Matcher - FINER] 14-Feb-11; 15:55:28.400: HTTP Param matcher, parameter receiverList.receiver(1).email, pattern PAY_CHAIN_INVALID_BUS_ACCT_SECONDARY@test.com: Matched value PAY_CHAIN_INVALID_BUS_ACCT_SECONDARY@test.com 
+[org.mocksy.server.http.RequestServlet - INFO] 14-Feb-11; 15:55:28.401: Matched PAY_CHAIN_INVALID_BUS_ACCT 
+[org.mocksy.server.http.RequestServlet - FINE] 14-Feb-11; 15:55:28.412: Request: http://localhost:8080/AdaptivePayments/Pay/?null
+Response: responseEnvelope.timestamp=2011-02-02T15%3A59%3A28.535-08%3A00&responseEnvelope.ack=Failure&responseEnvelope.correlationId=99b0ba1417854&responseEnvelope.build=1655692&error(0).errorId=580023&error(0).domain=PLATFORM&error(0).severity=Error&error(0).category=Application&error(0).message=For chained payments, receivers must have premier or
+				business accounts&error(0).parameter(0)=${parameter}
+Duration: 186 
