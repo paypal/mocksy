@@ -135,7 +135,7 @@ public class XmlMatcher extends Matcher {
 			if ( !documentCache.containsKey( request ) ) {
 				DocumentBuilderFactory domFactory = DocumentBuilderFactory
 				        .newInstance();
-				domFactory.setNamespaceAware( false );
+				domFactory.setNamespaceAware( true );
 				try {
 					// get the XML from the request
 					DocumentBuilder builder = domFactory.newDocumentBuilder();

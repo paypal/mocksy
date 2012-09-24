@@ -1,0 +1,30 @@
+> Build mocksy server by running “mvn clean install” command from mocksy-server directory
+
+> Make sure mocksy server is ready to run by executing following command
+	
+		java -jar target/mocksy-server-0.8-full.jar --help
+		
+> Run mocksy server to serve xml request/response by running the start.sh in mocksy-server directory
+	
+		Edit the mocksy-server/start.sh to specify rules file path and port
+			
+		# give the rules file path here
+		RULES_FILE_PATH=src/test/rules/xml/rules.xml
+
+		#Configure the port you want the mocksy to run
+		PORT=7890
+	
+> You can use the  mocksy-server/stop.sh to stop the mocksy server
+
+
+> Alternatively you can run the following command on the command line to start the mocksy with appropriate jar file and rules file paths
+
+	   java -jar c:\root\mocksy\mocksy-server\target\mocksy-server-0.8-full.jar --admin --port 7890 --ruleset c:\root\mocksy\mocksy-xml-rules\rules.xml
+
+
+> Send XML request to mocksy server using curl with following command
+	
+	curl -verbose -header “Content-Type: text/xml” -data@request.xml http://localhost:7890
+
+	
+> Check the rules being used at http://localhost:7891/rules
